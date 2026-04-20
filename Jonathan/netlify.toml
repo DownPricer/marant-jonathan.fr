@@ -1,0 +1,13 @@
+# https://docs.netlify.com/configure-builds/file-based-configuration/
+#
+# Déploiement Git (recommandé) : seul le dossier dist est publié — base = /
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Déploiement par glisser-déposer du dossier ENTIER du projet : voir GUIDE-PROJETS.md
+# (build local avec : npm run build:netlify-drop ; le fichier _redirects à la racine
+# n’est pas dans « publish », il ne s’applique pas au flux Git ci-dessus.)

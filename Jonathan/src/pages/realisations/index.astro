@@ -1,0 +1,151 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import ProjetCard from '../../components/ProjetCard.astro';
+import projets from '../../data/projets.json';
+import site from '../../data/site.json';
+import { labelCategorie } from '../../utils/categories';
+
+/** Filtres = les 5 métiers (même ordre que l’accueil), pas seulement les catégories présentes dans les données. */
+const filtresMetiers = site.metiers.map((m) => ({
+  id: m.id,
+  label: labelCategorie(m.id),
+}));
+---
+
+<Layout title="Réalisations" description="Portfolio de Marant Jonathan : menuiserie et ébénisterie sur mesure, charpente, zinguerie et couverture autour de Saint-Ambroix (Gard).">
+  <section class="page-header">
+    <div class="container">
+      <Breadcrumb crumbs={[{ label: 'Réalisations' }]} />
+      <p class="overline reveal">Portfolio</p>
+      <h1 class="reveal">Nos réalisations</h1>
+      <p class="page-intro text-dim reveal">
+        Chaque projet est unique. Parcourez nos chantiers pour découvrir
+        l'exigence et la précision qui caractérisent notre travail.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <!-- Filtres -->
+      <div class="filtres reveal" id="filtres">
+        <button class="filtre-btn active" data-filtre="all">Tous</button>
+        {filtresMetiers.map(({ id, label }) => (
+          <button class="filtre-btn" type="button" data-filtre={id}>
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div class="projets-grid" id="projets-grid">
+        {projets.map((p, i) => (
+          <div class="projet-wrap" data-cat={p.categorie}>
+            <ProjetCard
+              slug={p.slug}
+              titre={p.titre}
+              categorie={p.categorie}
+              annee={p.annee}
+              lieu={p.lieu}
+              couverture={p.couverture}
+              index={i}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .page-header {
+    padding-top: calc(var(--header-height) + var(--space-xl));
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-header h1 {
+    margin-block: .5rem var(--space-sm);
+  }
+
+  .page-intro {
+    font-size: 1.05rem;
+  }
+
+  .filtres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-bottom: var(--space-lg);
+  }
+
+  .filtre-btn {
+    padding: .5rem 1.4rem;
+    font-size: .78rem;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    transition: all var(--transition);
+  }
+
+  .filtre-btn:hover,
+  .filtre-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .projets-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  @media (min-width: 768px) {
+    .projets-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 1200px) {
+    .projets-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .projet-wrap {
+    transition: opacity .4s, transform .4s;
+  }
+
+  .projet-wrap.hidden {
+    opacity: 0;
+    transform: scale(.95);
+    pointer-events: none;
+    position: absolute;
+    visibility: hidden;
+  }
+</style>
+
+<script>
+  function initFiltres() {
+    const btns = document.querySelectorAll<HTMLButtonElement>('.filtre-btn');
+    const wraps = document.querySelectorAll<HTMLElement>('.projet-wrap');
+
+    const params = new URLSearchParams(window.location.search);
+    const initial = params.get('filtre') || 'all';
+
+    function apply(cat: string) {
+      btns.forEach((b) => b.classList.toggle('active', b.dataset.filtre === cat));
+      wraps.forEach((w) => {
+        const match = cat === 'all' || w.dataset.cat === cat;
+        w.classList.toggle('hidden', !match);
+      });
+    }
+
+    btns.forEach((b) =>
+      b.addEventListener('click', () => apply(b.dataset.filtre!))
+    );
+
+    apply(initial);
+  }
+
+  document.addEventListener('DOMContentLoaded', initFiltres);
+  document.addEventListener('astro:page-load', initFiltres);
+</script>

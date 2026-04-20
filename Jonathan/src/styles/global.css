@@ -1,0 +1,243 @@
+/* ── Reset & Base ─────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg:           #0a0a0a;
+  --surface:      #131311;
+  --surface-up:   #1a1917;
+  --border:       #2a2926;
+  --text:         #f5f0eb;
+  --text-dim:     #9a9590;
+  --accent:       #b8956a;
+  --accent-light: #d4aa7d;
+  --accent-glow:  rgba(184, 149, 106, .12);
+
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  /** Titre principal du hero (nom / marque) — sans-serif, distinct d’Inter */
+  --font-hero-title: 'Outfit', system-ui, sans-serif;
+  /** Chiffres / stats (condensé, lisible) */
+  --font-stat: 'Oswald', system-ui, sans-serif;
+
+  --space-xs:  .5rem;
+  --space-sm:  1rem;
+  --space-md:  2rem;
+  --space-lg:  4rem;
+  --space-xl:  7rem;
+  --space-2xl: 10rem;
+
+  --max-w:     1400px;
+  --radius:    4px;
+  --transition: .35s cubic-bezier(.4, 0, .2, 1);
+
+  /** Hauteur utile du header fixe (logo + barre) — à garder aligné avec `Header.astro` */
+  --header-height: 108px;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/** Espace pour la barre d’appel / WhatsApp fixe en bas */
+body.has-floating-contact {
+  padding-bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px));
+}
+
+/** Intro plein écran : le header réel reste cliquable (menu burger) au-dessus du voile */
+body.intro-splash-active #site-header {
+  z-index: 1250;
+  /* Fond pleinement opaque (sans transparence ni flou vitré) tant que l’intro est visible */
+  background: var(--bg);
+  box-shadow: 0 1px 0 var(--border);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+body.intro-splash-active #site-header .logo-mark {
+  opacity: 1;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --header-height: 120px;
+  }
+}
+
+img, video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+/* ── Typography ──────────────────────────────────────────── */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: .02em;
+}
+
+h1 { font-size: clamp(2.8rem, 6vw, 5.5rem); }
+h2 { font-size: clamp(2rem, 4vw, 3.2rem); }
+h3 { font-size: clamp(1.4rem, 2.5vw, 1.8rem); }
+
+/** Titres de section courts (accueil) : une ligne sur mobile, taille commune */
+@media (max-width: 767px) {
+  h2.section-title-one-line {
+    font-size: clamp(0.82rem, 2.2vw + 0.62rem, 1.26rem);
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+h4 { font-size: 1.15rem; }
+
+p { max-width: 65ch; }
+
+.text-dim   { color: var(--text-dim); }
+.text-accent { color: var(--accent); }
+
+.overline {
+  font-family: var(--font-body);
+  font-size: .75rem;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ── Layout utilities ────────────────────────────────────── */
+.container {
+  width: 100%;
+  max-width: var(--max-w);
+  margin-inline: auto;
+  padding-inline: var(--space-md);
+}
+
+.section {
+  padding-block: var(--space-xl);
+}
+
+.section--hero {
+  padding-block: 0;
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .9rem 2.2rem;
+  font-size: .85rem;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  transition: background var(--transition), color var(--transition);
+}
+
+.btn:hover, .btn:focus-visible {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.btn--filled {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.btn--filled:hover, .btn--filled:focus-visible {
+  background: var(--accent-light);
+  border-color: var(--accent-light);
+}
+
+/* ── Reveal animation ────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity .8s var(--transition), transform .8s var(--transition);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Grid helpers ────────────────────────────────────────── */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+@media (min-width: 768px) {
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ── Selection ───────────────────────────────────────────── */
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+/* ── Focus visible ───────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}

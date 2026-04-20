@@ -1,0 +1,37 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import ContactForm from '../components/ContactForm.astro';
+---
+
+<Layout title="Contact" description="Contactez Marant Jonathan à Saint-Ambroix : menuiserie, ébénisterie, charpente, zinguerie et couverture. Devis et conseils pour particuliers et professionnels.">
+  <section class="page-header">
+    <div class="container">
+      <Breadcrumb crumbs={[{ label: 'Contact' }]} />
+      <p class="overline reveal">Échangeons</p>
+      <h1 class="reveal">Contact</h1>
+      <p class="page-intro text-dim reveal">
+        Un projet de menuiserie, de charpente ou de couverture ?
+        Contactez-nous pour un échange personnalisé et un devis gratuit.
+      </p>
+    </div>
+  </section>
+
+  <ContactForm />
+</Layout>
+
+<style>
+  .page-header {
+    padding-top: calc(var(--header-height) + var(--space-xl));
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-header h1 {
+    margin-block: .5rem var(--space-sm);
+  }
+
+  .page-intro {
+    font-size: 1.05rem;
+  }
+</style>

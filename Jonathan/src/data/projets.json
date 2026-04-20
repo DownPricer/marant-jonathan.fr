@@ -1,0 +1,297 @@
+[
+  {
+    "slug": "bibliotheque",
+    "titre": "Bibliothèque",
+    "categorie": "ebenisterie",
+    "annee": "2026",
+    "lieu": "Saint-Ambroix",
+    "description": "Bibliothèque en bois sur mesure à Saint-Ambroix : conception, fabrication artisanale et pose soignée pour un rangement qui s'intègre parfaitement à votre intérieur.",
+    "images": [
+      "01.jpeg",
+      "02.jpeg",
+      "03.jpeg",
+      "04.jpeg",
+      "05.jpeg"
+    ],
+    "couverture": "01.jpeg",
+    "video": null,
+    "vedette": false
+  },
+  {
+    "slug": "chenneaux",
+    "titre": "Chéneaux",
+    "categorie": "zinguerie",
+    "annee": "2026",
+    "lieu": "Saint-Ambroix",
+    "description": "Réalisation en zinguerie et étanchéité : mise en œuvre soignée, matériaux adaptés et finitions propres pour une protection durable.",
+    "images": [
+      "01.jpeg",
+      "02.jpeg",
+      "03.jpeg",
+      "04.jpeg",
+      "05.jpeg",
+      "06.jpeg"
+    ],
+    "couverture": "01.jpeg",
+    "video": null,
+    "vedette": false
+  },
+  {
+    "slug": "creation-mobiliers",
+    "titre": "Création de mobiliers",
+    "categorie": "ebenisterie",
+    "annee": "2026",
+    "lieu": "Saint-Ambroix",
+    "description": "Création de mobilier bois sur mesure : tables, meubles TV, buffets et rangements. Étude personnalisée, fabrication artisanale et finitions soignées dans le Gard.",
+    "images": [
+      "01.jpeg",
+      "02.jpeg",
+      "03.jpeg",
+      "04.jpeg",
+      "05.jpeg",
+      "06.jpeg",
+      "07.jpeg",
+      "08.jpeg",
+      "09.jpeg"
+    ],
+    "couverture": "01.jpeg",
+    "video": null,
+    "vedette": false
+  },
+  {
+    "slug": "dressing",
+    "titre": "Dressing",
+    "categorie": "ebenisterie",
+    "annee": "2026",
+    "lieu": "Saint-Ambroix",
+    "description": "Dressing sur mesure en bois : aménagement intérieur optimisé, tiroirs, penderies et étagères adaptés à votre espace. Fabrication artisanale à Saint-Ambroix.",
+    "images": [
+      "01.jpeg",
+      "02.jpeg",
+      "03.jpeg",
+      "04.jpeg",
+      "05.jpeg",
+      "06.jpeg",
+      "07.jpeg",
+      "08.jpeg"
+    ],
+    "couverture": "01.jpeg",
+    "video": null,
+    "vedette": true
+  },
+  {
+    "slug": "escalier-colimacon",
+    "titre": "Escalier sur mesure",
+    "categorie": "menuiserie",
+    "annee": "2026",
+    "lieu": "Saint-Ambroix",
+    "description": "Escalier quart tournant semi suspendu et escalier en colimaçon : étude, fabrication et pose sur mesure, avec le souci du détail et des finitions.",
+    "images": [
+      "01.jpeg",
+      "02.jpeg",
+      "03.jpeg",
+      "04.jpeg",
+      "05.jpeg",
+      "06.jpeg",
+      "07.jpeg",
+      "08.jpeg",
+      "09.jpeg",
+      "10.jpeg",
+      "11.jpeg"
+    ],
+    "galerieSections": [
+      {
+        "layout": "hero",
+        "sousTitre": "Escalier 1/4 tournant",
+        "note": "Semi suspendu.",
+        "images": [
+          "01.jpeg"
+        ]
+      },
+      {
+        "layout": "grid",
+        "sousTitre": "Escalier en colimaçon",
+        "images": [
+          "02.jpeg",
+          "03.jpeg",
+          "11.jpeg",
+          "04.jpeg",
+          "05.jpeg",
+          "06.jpeg",
+          "07.jpeg",
+          "08.jpeg",
+          "09.jpeg",
+          "10.jpeg"
+        ]
+      }
+    ],
+    "couverture": "01.jpeg",
+    "video": null,
+    "vedette": true
+  },
+  {
+    "slug": "espace-detente",
+    "titre": "Espace détente",
+    "categorie": "menuiserie",
+    "annee": "2026",
+    "lieu": "Saint-Ambroix",
+    "description": "Aménagement d'un espace détente en bois : terrasse couverte, bardage et mobilier intégré pour un coin de repos chaleureux et durable.",
+    "images": [
+      "01.jpeg",
+      "02.jpeg",
+      "03.jpeg",
+      "04.jpeg",
+      "05.jpeg",
+      "06.jpeg"
+    ],
+    "couverture": "01.jpeg",
+    "video": null,
+    "vedette": false
+  },
+  {
+    "slug": "pergolas",
+    "titre": "Carport",
+    "categorie": "menuiserie",
+    "annee": "2026",
+    "lieu": "Saint-Ambroix",
+    "description": "Carport en bois sur mesure : structure solide, design épuré et protection efficace de vos véhicules. Réalisation artisanale dans le Gard.",
+    "images": [
+      "01.jpeg",
+      "02.jpeg",
+      "03.jpeg",
+      "04.jpeg",
+      "05.jpeg",
+      "06.jpeg",
+      "07.jpeg",
+      "08.jpeg",
+      "09.jpeg",
+      "10.jpeg"
+    ],
+    "couverture": "01.jpeg",
+    "video": null,
+    "vedette": true
+  },
+  {
+    "slug": "porte-sur-mesure",
+    "titre": "Porte sur mesure",
+    "categorie": "menuiserie",
+    "annee": "2026",
+    "lieu": "Saint-Ambroix",
+    "description": "Porte intérieure ou extérieure en bois sur mesure : prise de cotes, fabrication artisanale et pose ajustée. Un savoir-faire menuisier pour des ouvertures uniques.",
+    "images": [
+      "01.jpeg",
+      "02.jpeg",
+      "03.jpeg",
+      "04.jpeg",
+      "05.jpeg",
+      "06.jpeg",
+      "07.jpeg",
+      "08.jpeg"
+    ],
+    "couverture": "01.jpeg",
+    "video": null,
+    "vedette": false
+  },
+  {
+    "slug": "restauration-balcon",
+    "titre": "Restauration de balcon",
+    "categorie": "menuiserie",
+    "annee": "2026",
+    "lieu": "Saint-Ambroix",
+    "description": "Restauration complète d'un balcon bois : remplacement des éléments dégradés, traitement et finitions pour redonner caractère et solidité à votre façade.",
+    "images": [
+      "01.jpeg",
+      "02.jpeg",
+      "03.jpeg"
+    ],
+    "couverture": "01.jpeg",
+    "video": null,
+    "vedette": false
+  },
+  {
+    "slug": "terasse-bois",
+    "titre": "Terrasse bois",
+    "categorie": "menuiserie",
+    "annee": "2026",
+    "lieu": "Saint-Ambroix",
+    "description": "Terrasse en bois sur mesure : choix des essences, structure porteuse et lames posées avec précision pour un extérieur élégant et résistant.",
+    "images": [
+      "01.jpeg",
+      "02.jpeg",
+      "03.jpeg",
+      "04.jpeg",
+      "05.jpeg",
+      "06.jpeg",
+      "07.jpeg",
+      "08.jpeg",
+      "09.jpeg",
+      "10.jpeg"
+    ],
+    "couverture": "01.jpeg",
+    "video": null,
+    "vedette": false
+  },
+  {
+    "slug": "toiture",
+    "titre": "Toiture",
+    "categorie": "couverture",
+    "annee": "2026",
+    "lieu": "Saint-Ambroix",
+    "description": "Chantier de charpente / couverture : structure, ossature bois ou couverture, travail artisanal et suivi de bout en bout.",
+    "images": [
+      "01.jpeg",
+      "02.jpeg",
+      "03.jpeg",
+      "04.jpeg",
+      "05.jpeg",
+      "06.jpeg",
+      "07.jpeg",
+      "08.jpeg",
+      "09.jpeg"
+    ],
+    "couverture": "01.jpeg",
+    "video": null,
+    "vedette": false
+  },
+  {
+    "slug": "toiture-bac-acier",
+    "titre": "Toiture bac acier",
+    "categorie": "couverture",
+    "annee": "2026",
+    "lieu": "Saint-Ambroix",
+    "description": "Chantier de charpente / couverture : structure, ossature bois ou couverture, travail artisanal et suivi de bout en bout.",
+    "images": [
+      "01.jpeg",
+      "02.jpeg",
+      "03.jpeg",
+      "04.jpeg"
+    ],
+    "couverture": "01.jpeg",
+    "video": null,
+    "vedette": false
+  },
+  {
+    "slug": "toiture-zinc-roulotte",
+    "titre": "Toiture zinc — roulotte",
+    "categorie": "zinguerie",
+    "annee": "2026",
+    "lieu": "Saint-Ambroix",
+    "description": "Réalisation en zinguerie et étanchéité : mise en œuvre soignée, matériaux adaptés et finitions propres pour une protection durable.",
+    "images": [
+      "01.jpeg",
+      "02.jpeg",
+      "03.jpeg",
+      "04.jpeg",
+      "05.jpeg",
+      "06.jpeg",
+      "07.jpeg",
+      "08.jpeg",
+      "09.jpeg",
+      "10.jpeg",
+      "11.jpeg"
+    ],
+    "couverture": "01.jpeg",
+    "video": null,
+    "vedette": true
+  }
+]

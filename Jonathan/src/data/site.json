@@ -1,0 +1,129 @@
+{
+  "nom": "Marant Jonathan",
+  "nomListing": "Marant Jonathan",
+  "marque": "Marant Jonathan Menuiserie",
+  "titre": "Artisan menuisier, charpentier, ebeniste, couvreur & zingueur",
+  "sousTitre": "Menuisier · Charpentier · Ebeniste - Couvreur - Zingueur",
+  "baseline": "Savoir-faire traditionnel, réalisations sur mesure pour particuliers et professionnels.",
+  "motsCles": [
+    "menuisier Saint-Ambroix",
+    "menuiserie sur mesure Gard",
+    "menuiserie bois",
+    "charpentier Saint-Ambroix",
+    "charpente bois Gard",
+    "ébéniste Gard",
+    "ebeniste Saint-Ambroix",
+    "ébénisterie sur mesure",
+    "mobilier sur mesure bois",
+    "couvreur Saint-Ambroix",
+    "couverture toiture Gard",
+    "zingueur Gard",
+    "zinguerie gouttières chéneaux",
+    "étanchéité toiture",
+    "agencement intérieur bois",
+    "escalier bois sur mesure",
+    "terrasse bois",
+    "dressing sur mesure",
+    "porte bois sur mesure",
+    "carport bois",
+    "artisan bois Cévennes",
+    "artisan menuisier Occitanie",
+    "rénovation bois",
+    "construction bois Saint-Ambroix",
+    "devis menuiserie Gard",
+    "devis charpente Saint-Ambroix"
+  ],
+  "telephone": "+33 6 99 51 93 59",
+  "email": "marant.jonathan@hotmail.com",
+  "googleAvisUrl": "https://maps.app.goo.gl/T1vfAJSCJmvrcEgL8",
+  "telephoneHint": "Numéro affiché sur la fiche Pages Jaunes ou communiqué sur demande.",
+  "emailHint": "Écrivez-nous via le formulaire ci-dessous.",
+  "adresse": {
+    "rue": "148 voie Romaine",
+    "codePostal": "30500",
+    "ville": "Saint-Ambroix"
+  },
+  "horaires": "Lundi – Vendredi : 8h00 – 19h00 · Samedi et dimanche : fermé",
+  "zone": "Saint-Ambroix (Gard) et environs",
+  "pagesJaunesUrl": "https://pagesjaunes.fr/pros/61106267",
+  "prestations": [
+    "Menuiserie bois",
+    "Menuiserie sur mesure",
+    "Ébénisterie et mobilier sur mesure",
+    "Rénovation de menuiserie PVC",
+    "Charpente",
+    "Chéneau",
+    "Zinguerie (gouttières, chéneaux, étanchéité)",
+    "Couverture et travaux de toiture"
+  ],
+  "metiers": [
+    {
+      "id": "menuiserie",
+      "titre": "Menuisier",
+      "sousTitre": "Agencements & menuiseries bois sur mesure",
+      "description": "Portes, fenêtres, escaliers, habillages et agencements intérieurs. Chaque pièce est conçue et fabriquée à la main, au plus près de vos envies et de votre espace de vie.",
+      "alt": "Menuisier à Saint-Ambroix — travail du bois sur mesure",
+      "image": "/images/metiers/menuiserie.svg"
+    },
+    {
+      "id": "charpente",
+      "titre": "Charpentier",
+      "sousTitre": "Structures bois & ossatures de toiture",
+      "description": "Charpentes traditionnelles, fermettes, carports et ossatures bois — neuf ou rénovation. Des assemblages robustes, taillés avec soin pour durer plusieurs générations.",
+      "alt": "Charpentier dans le Gard — charpente bois traditionnelle",
+      "image": "/images/metiers/charpente.svg"
+    },
+    {
+      "id": "ebenisterie",
+      "titre": "Ébéniste",
+      "sousTitre": "Mobilier artisanal & pièces uniques en bois",
+      "description": "Bibliothèques, dressings, tables et commodes fabriqués à la main en bois massif. Des créations uniques, pensées avec vous, qui allient durabilité et caractère.",
+      "alt": "Ébéniste à Saint-Ambroix — mobilier bois sur mesure",
+      "image": "/images/metiers/menuiserie.svg"
+    },
+    {
+      "id": "couverture",
+      "titre": "Couvreur",
+      "sousTitre": "Pose & rénovation de toiture pour votre maison",
+      "description": "Tuiles canal, bac acier : pose, réparation et entretien de toitures. Un diagnostic précis et des finitions soignées pour protéger votre habitation sur le long terme.",
+      "alt": "Couvreur dans le Gard — rénovation de toiture et couverture",
+      "image": "/images/metiers/couverture.svg"
+    },
+    {
+      "id": "zinguerie",
+      "titre": "Zingueur",
+      "sousTitre": "Zinguerie & étanchéité de votre toiture",
+      "description": "Gouttières, chéneaux, noues, solins et raccords en zinc : une mise en œuvre soignée pour canaliser les eaux et préserver durablement votre toiture et vos façades.",
+      "alt": "Zingueur à Saint-Ambroix — gouttières, chéneaux et étanchéité zinc",
+      "image": "/images/metiers/zinguerie.svg"
+    }
+  ],
+  "aPropos": {
+    "paragraphe1": "Basé à Saint-Ambroix, Marant Jonathan accompagne les particuliers et les professionnels sur la construction neuve comme sur la rénovation. Menuiserie et ébénisterie, charpente, zinguerie et couverture : des savoir-faire complémentaires pour une prise en charge cohérente de vos projets bois, ameublement et toiture.",
+    "paragraphe2": "Le travail est entièrement réalisé à la main, avec le souci du détail et une écoute attentive à chaque demande. Solutions adaptées, délais respectés et finitions soignées : une relation de confiance, du premier échange à la réception des travaux.",
+    "certifications": [
+      "Entreprise de menuiserie",
+      "Intervention particuliers & professionnels",
+      "Neuf & rénovation",
+      "Assurance décennale"
+    ]
+  },
+  "avis": [
+    {
+      "texte": "Personne très sérieuse et travail minutieux. Je recommande les yeux fermés.",
+      "auteur": "Annick B."
+    },
+    {
+      "texte": "Très gentil, très professionnel, à l'écoute de mon projet et créatif. Minutieux sur chaque détail — je ferai de nouveau appel à lui.",
+      "auteur": "Amélie D."
+    },
+    {
+      "texte": "Superbe travail, une personne passionnée : ça se voit dans la qualité des créations. Merci pour votre professionnalisme.",
+      "auteur": "Trecy"
+    },
+    {
+      "texte": "Grand chantier de rénovation : isolation et aménagement d'un hangar de 130 m² façon loft. Suivi rigoureux du début à la fin.",
+      "auteur": "Christophe G."
+    }
+  ]
+}

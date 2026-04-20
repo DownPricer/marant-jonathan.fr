@@ -1,0 +1,79 @@
+---
+import { withBase } from '../utils/base';
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  crumbs: Crumb[];
+}
+
+const { crumbs } = Astro.props;
+
+const fullCrumbs = [{ label: 'Accueil', href: withBase('/') }, ...crumbs];
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: fullCrumbs.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    ...(c.href ? { item: new URL(c.href.replace(/^\//, ''), Astro.site!).href } : {}),
+  })),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+<nav class="breadcrumb" aria-label="Fil d'Ariane">
+  <ol class="breadcrumb__list">
+    {fullCrumbs.map((c, i) => (
+      <li class="breadcrumb__item">
+        {c.href && i < fullCrumbs.length - 1 ? (
+          <a href={c.href} class="breadcrumb__link">{c.label}</a>
+        ) : (
+          <span class="breadcrumb__current" aria-current="page">{c.label}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .breadcrumb {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--text-dim);
+    margin-bottom: var(--space-sm);
+  }
+
+  .breadcrumb__list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    align-items: center;
+  }
+
+  .breadcrumb__item:not(:last-child)::after {
+    content: '›';
+    margin-left: 0.3rem;
+    opacity: 0.5;
+  }
+
+  .breadcrumb__link {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+
+  .breadcrumb__link:hover {
+    color: var(--accent-light);
+  }
+
+  .breadcrumb__current {
+    color: var(--text-dim);
+  }
+</style>

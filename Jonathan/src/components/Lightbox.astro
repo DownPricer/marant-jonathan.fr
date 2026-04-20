@@ -1,0 +1,356 @@
+---
+/**
+ * Lightbox component — drop this once in any page that has clickable gallery images.
+ * Trigger it by adding `data-lightbox-group="<group>"` and `data-lightbox-src="<full-url>"`
+ * to any clickable element. Optionally add `data-lightbox-type="video"` for MP4.
+ */
+---
+
+<div
+  class="lb"
+  id="lightbox"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Visionneuse de médias"
+  aria-hidden="true"
+>
+  <div class="lb-backdrop"></div>
+
+  <!-- Top bar -->
+  <div class="lb-topbar">
+    <span class="lb-counter" id="lb-counter"></span>
+    <button class="lb-close" aria-label="Fermer" id="lb-close">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Main area -->
+  <div class="lb-stage" id="lb-stage">
+    <div class="lb-media-wrap" id="lb-media-wrap">
+      <!-- img or video injected here -->
+    </div>
+  </div>
+
+  <!-- Prev / Next -->
+  <button class="lb-arrow lb-prev" aria-label="Image précédente" id="lb-prev">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+  </button>
+  <button class="lb-arrow lb-next" aria-label="Image suivante" id="lb-next">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <polyline points="9 6 15 12 9 18"/>
+    </svg>
+  </button>
+
+  <!-- Filmstrip -->
+  <div class="lb-filmstrip" id="lb-filmstrip"></div>
+</div>
+
+<style>
+  /* ── Overlay ──────────────────────────────────────────── */
+  .lb {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .35s;
+  }
+
+  .lb.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .lb-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 5, 5, .96);
+  }
+
+  /* ── Top bar ──────────────────────────────────────────── */
+  .lb-topbar {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+  }
+
+  .lb-counter {
+    font-size: .8rem;
+    letter-spacing: .14em;
+    color: rgba(245, 240, 235, .5);
+  }
+
+  .lb-close {
+    color: rgba(245, 240, 235, .6);
+    transition: color .25s;
+    padding: .5rem;
+  }
+
+  .lb-close:hover { color: #fff; }
+
+  /* ── Stage (main image area) ──────────────────────────── */
+  .lb-stage {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3.5rem;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  .lb-media-wrap {
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity .3s, transform .3s;
+  }
+
+  .lb-media-wrap img {
+    max-width: 90vw;
+    max-height: 75vh;
+    object-fit: contain;
+    border-radius: 2px;
+  }
+
+  .lb-media-wrap video {
+    max-width: 90vw;
+    max-height: 75vh;
+    outline: none;
+  }
+
+  .lb-media-wrap.fading {
+    opacity: 0;
+    transform: scale(.97);
+  }
+
+  /* ── Arrows ───────────────────────────────────────────── */
+  .lb-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    color: rgba(245, 240, 235, .45);
+    padding: 1rem;
+    transition: color .25s;
+  }
+
+  .lb-arrow:hover { color: #fff; }
+
+  .lb-prev { left: .5rem; }
+  .lb-next { right: .5rem; }
+
+  @media (max-width: 768px) {
+    .lb-arrow { display: none; }
+    .lb-stage { padding: 0 .5rem; }
+    .lb-media-wrap img,
+    .lb-media-wrap video {
+      max-width: 98vw;
+      max-height: 70vh;
+    }
+  }
+
+  /* ── Filmstrip ────────────────────────────────────────── */
+  .lb-filmstrip {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding: .75rem 1rem 1.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .lb-filmstrip::-webkit-scrollbar { display: none; }
+
+  .lb-filmstrip .thumb {
+    flex-shrink: 0;
+    width: 56px;
+    height: 38px;
+    background-size: cover;
+    background-position: center;
+    border: 2px solid transparent;
+    border-radius: 2px;
+    opacity: .4;
+    cursor: pointer;
+    transition: opacity .25s, border-color .25s;
+  }
+
+  .lb-filmstrip .thumb:hover { opacity: .7; }
+
+  .lb-filmstrip .thumb.active {
+    opacity: 1;
+    border-color: var(--accent, #b8956a);
+  }
+</style>
+
+<script>
+  class Lightbox {
+    private el: HTMLElement;
+    private wrap: HTMLElement;
+    private filmstrip: HTMLElement;
+    private counter: HTMLElement;
+    private items: { src: string; type: 'image' | 'video' }[] = [];
+    private idx = 0;
+    private touchStartX = 0;
+
+    constructor() {
+      this.el = document.getElementById('lightbox')!;
+      this.wrap = document.getElementById('lb-media-wrap')!;
+      this.filmstrip = document.getElementById('lb-filmstrip')!;
+      this.counter = document.getElementById('lb-counter')!;
+
+      document.getElementById('lb-close')!.addEventListener('click', () => this.close());
+      document.getElementById('lb-prev')!.addEventListener('click', () => this.prev());
+      document.getElementById('lb-next')!.addEventListener('click', () => this.next());
+      this.el.querySelector('.lb-backdrop')!.addEventListener('click', () => this.close());
+
+      document.addEventListener('keydown', (e) => {
+        if (!this.isOpen()) return;
+        if (e.key === 'Escape') this.close();
+        if (e.key === 'ArrowLeft') this.prev();
+        if (e.key === 'ArrowRight') this.next();
+      });
+
+      const stage = document.getElementById('lb-stage')!;
+      stage.addEventListener('touchstart', (e) => {
+        this.touchStartX = e.touches[0].clientX;
+      }, { passive: true });
+
+      stage.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - this.touchStartX;
+        if (Math.abs(dx) > 50) {
+          dx < 0 ? this.next() : this.prev();
+        }
+      });
+
+      this.bindTriggers();
+    }
+
+    private bindTriggers() {
+      document.querySelectorAll<HTMLElement>('[data-lightbox-src]').forEach((el) => {
+        el.style.cursor = 'pointer';
+        el.addEventListener('click', (e) => {
+          e.preventDefault();
+          const group = el.dataset.lightboxGroup || '_default';
+          const triggers = Array.from(
+            document.querySelectorAll<HTMLElement>(
+              `[data-lightbox-group="${group}"]`
+            )
+          );
+          this.items = triggers.map((t) => ({
+            src: t.dataset.lightboxSrc!,
+            type: (t.dataset.lightboxType as 'video') || 'image',
+          }));
+          const startIdx = triggers.indexOf(el);
+          this.open(startIdx >= 0 ? startIdx : 0);
+        });
+      });
+    }
+
+    private isOpen() {
+      return this.el.classList.contains('open');
+    }
+
+    open(idx: number) {
+      this.idx = idx;
+      this.el.classList.add('open');
+      this.el.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      this.buildFilmstrip();
+      this.show(false);
+      this.preloadAdjacent();
+    }
+
+    close() {
+      this.el.classList.remove('open');
+      this.el.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      this.wrap.innerHTML = '';
+    }
+
+    prev() {
+      if (this.items.length < 2) return;
+      this.idx = (this.idx - 1 + this.items.length) % this.items.length;
+      this.show(true);
+    }
+
+    next() {
+      if (this.items.length < 2) return;
+      this.idx = (this.idx + 1) % this.items.length;
+      this.show(true);
+    }
+
+    private show(animate: boolean) {
+      const item = this.items[this.idx];
+      this.counter.textContent = `${this.idx + 1} / ${this.items.length}`;
+
+      if (animate) {
+        this.wrap.classList.add('fading');
+        setTimeout(() => this.renderMedia(item), 200);
+      } else {
+        this.renderMedia(item);
+      }
+
+      this.filmstrip.querySelectorAll('.thumb').forEach((t, i) => {
+        t.classList.toggle('active', i === this.idx);
+      });
+
+      const activeThumb = this.filmstrip.querySelector('.thumb.active');
+      activeThumb?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+
+    private renderMedia(item: { src: string; type: string }) {
+      if (item.type === 'video') {
+        this.wrap.innerHTML = `<video src="${item.src}" controls autoplay playsinline></video>`;
+      } else {
+        this.wrap.innerHTML = `<img src="${item.src}" alt="" loading="eager" />`;
+      }
+      requestAnimationFrame(() => this.wrap.classList.remove('fading'));
+    }
+
+    private buildFilmstrip() {
+      this.filmstrip.innerHTML = '';
+      this.items.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = `thumb${i === this.idx ? ' active' : ''}`;
+        if (item.type === 'image') {
+          div.style.backgroundImage = `url(${item.src})`;
+        }
+        div.addEventListener('click', () => {
+          this.idx = i;
+          this.show(true);
+        });
+        this.filmstrip.appendChild(div);
+      });
+    }
+
+    private preloadAdjacent() {
+      [-1, 1].forEach((offset) => {
+        const i = (this.idx + offset + this.items.length) % this.items.length;
+        const item = this.items[i];
+        if (item?.type === 'image') {
+          const img = new Image();
+          img.src = item.src;
+        }
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => new Lightbox());
+  document.addEventListener('astro:page-load', () => new Lightbox());
+</script>

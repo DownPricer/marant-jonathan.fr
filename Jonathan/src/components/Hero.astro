@@ -1,0 +1,374 @@
+---
+import site from '../data/site.json';
+import { withBase } from '../utils/base';
+
+interface Props {
+  image?: string;
+  video?: string;
+}
+
+const fallbackHero = '/images/projets/escalier-colimacon/01.jpeg';
+const { image = fallbackHero, video } = Astro.props;
+const heroFallback = withBase(image.startsWith('/') ? image : `/${image}`);
+
+const nomParts = site.nom.trim().split(/\s+/);
+const prenomHero = nomParts[0] ?? site.nom;
+const nomFamilleHero = nomParts.length > 1 ? nomParts.slice(1).join(' ') : '';
+
+/** Baseline : 2 lignes sur mobile, une phrase sur desktop (source unique `site.baseline`). */
+const baselineParts = site.baseline.trim().match(/^(.+?),\s*(.+)$/);
+const baselineL1 = baselineParts?.[1]?.trim() ?? site.baseline.trim();
+let baselineL2 = baselineParts?.[2]?.trim() ?? '';
+if (baselineL2.length > 0) {
+  baselineL2 = baselineL2.charAt(0).toUpperCase() + baselineL2.slice(1);
+}
+const baselineTwoLines = baselineL2.length > 0;
+
+/** Banque d'images hero : .webp en priorité, JPEG en fallback sans doublon. */
+const bankWebp = import.meta.glob('../photo background/**/*.{webp,WEBP}', { eager: true, import: 'default' });
+const bankJpeg = import.meta.glob('../photo background/**/*.{jpg,jpeg,JPG,JPEG}', { eager: true, import: 'default' });
+function _bgToUrl(v: unknown): string {
+  if (typeof v === 'string') return v;
+  if (v && typeof v === 'object' && 'src' in v) return (v as { src: string }).src;
+  return '';
+}
+const backgroundUrls: string[] = [
+  ...Object.values(bankWebp).map(_bgToUrl),
+  ...Object.entries(bankJpeg)
+    .filter(([p]) => !bankWebp[p.replace(/\.(jpe?g)$/i, '.webp')])
+    .map(([, v]) => _bgToUrl(v)),
+].filter(Boolean);
+---
+
+<section class="hero section--hero">
+  <div class="hero-media">
+    {video ? (
+      <video
+        class="hero-bg"
+        src={video.startsWith('http') ? video : withBase(video.startsWith('/') ? video : `/${video}`)}
+        autoplay
+        muted
+        loop
+        playsinline
+        poster={heroFallback}
+      />
+    ) : (
+      <>
+        <div
+          id="hero-bg-surface"
+          class="hero-bg hero-img"
+          style={`background-image:url(${JSON.stringify(heroFallback)})`}
+        ></div>
+        {backgroundUrls.length > 0 && (
+          <script define:vars={{ backgroundUrls }}>
+            {
+              const el = document.getElementById('hero-bg-surface');
+              if (el && backgroundUrls.length) {
+                const pick = backgroundUrls[Math.floor(Math.random() * backgroundUrls.length)];
+                el.style.backgroundImage = `url("${String(pick).replace(/"/g, '\\"')}")`;
+              }
+            }
+          </script>
+        )}      </>
+    )}
+    <div class="hero-overlay"></div>
+  </div>
+
+  <div class="hero-content container">
+    <div class="hero-heading">
+      <div class="hero-logo-strip-wrap">
+        <div class="hero-logo-strip" aria-hidden="true">
+          <picture>
+            <source
+              srcset={`${withBase('/logo/hero-logo-mj-marque.webp')}?v=3`}
+              type="image/webp"
+            />
+            <img
+              src={`${withBase('/logo/hero-logo-mj-marque.png')}?v=3`}
+              alt=""
+              width="800"
+              height="800"
+              decoding="async"
+              fetchpriority="high"
+              class="hero-logo-strip__img"
+            />
+          </picture>
+        </div>
+      </div>
+      <h1 class="hero-title reveal">
+        <span class="hero-title__given">{prenomHero}</span>
+        {nomFamilleHero && (
+          <>
+            {' '}
+            <span class="hero-title__family">{nomFamilleHero}</span>
+          </>
+        )}
+      </h1>
+    </div>
+    <p class="hero-sub reveal">{site.sousTitre}</p>
+    <p class="hero-baseline reveal">
+      {baselineTwoLines ? (
+        <>
+          <span class="hero-baseline__l1">{baselineL1}</span>
+          <span class="hero-baseline__sep" aria-hidden="true">, </span>
+          <span class="hero-baseline__l2">{baselineL2}</span>
+        </>
+      ) : (
+        site.baseline
+      )}
+    </p>
+    <div class="hero-actions reveal">
+      <a href={withBase('/realisations')} class="btn">Découvrir les réalisations</a>
+      <a href={withBase('/contact')} class="btn btn--filled">Demander un devis</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll" aria-hidden="true">
+    <span></span>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .hero-media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-img {
+    background-size: cover;
+    background-position: center;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(10, 10, 10, .55) 0%,
+      rgba(10, 10, 10, .75) 100%
+    );
+  }
+
+  .hero-content {
+    position: relative;
+    text-align: center;
+    padding-block: var(--space-2xl);
+  }
+
+  .hero-heading {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1;
+  }
+
+  /* Logo PNG : plus grand, le titre remonte pour chevaucher le bas du visuel */
+  .hero-logo-strip-wrap {
+    width: auto;
+    max-width: min(18.5rem, 78vw);
+    margin-inline: auto;
+    margin-bottom: clamp(-2.15rem, -6.5vw, -1.1rem);
+    position: relative;
+    z-index: 1;
+    isolation: isolate;
+  }
+
+  @media (min-width: 768px) {
+    .hero-logo-strip-wrap {
+      max-width: min(21rem, 58%);
+      margin-bottom: clamp(-2.35rem, -5.2vw, -1.35rem);
+    }
+  }
+
+  /* Mobile : léger chevauchement du titre sur le bas du logo */
+  @media (max-width: 767px) {
+    .hero-logo-strip-wrap {
+      margin-bottom: clamp(-3rem, -11vw, -2rem);
+    }
+
+    .hero-title {
+      margin-top: clamp(-1.05rem, -3.4vw, -0.4rem);
+    }
+
+    .hero-title__given {
+      margin-top: clamp(-1rem, -3.6vw, -0.35rem);
+    }
+  }
+
+  .hero-logo-strip {
+    position: relative;
+    z-index: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    box-sizing: border-box;
+    overflow: visible;
+    line-height: 0;
+    animation: hero-logo-levitate 7s ease-in-out infinite;
+    transform-origin: 50% 65%;
+  }
+
+  @keyframes hero-logo-levitate {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+    25% {
+      transform: translate3d(0.5px, -4px, 0) rotate(0.12deg);
+    }
+    50% {
+      transform: translate3d(-0.5px, -2px, 0) rotate(-0.08deg);
+    }
+    75% {
+      transform: translate3d(-0.5px, -5px, 0) rotate(0.08deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-logo-strip {
+      animation: none;
+    }
+  }
+
+  .hero-logo-strip__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: transparent;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  .hero-title {
+    position: relative;
+    z-index: 2;
+    margin-block: 0 0.5rem;
+    margin-top: clamp(-0.85rem, -2.4vw, -0.25rem);
+    font-family: var(--font-hero-title);
+    font-size: clamp(2.75rem, 7.5vw, 5.75rem);
+    font-weight: 700;
+    font-style: normal;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+    color: var(--text);
+    text-wrap: balance;
+    text-shadow:
+      0 0 1.25rem rgba(10, 10, 10, 0.9),
+      0 0 2rem rgba(10, 10, 10, 0.55),
+      0 2px 4px rgba(10, 10, 10, 0.85);
+  }
+
+  .hero-title__given {
+    display: inline-block;
+    position: relative;
+    margin-top: clamp(-0.85rem, -2.8vw, -0.35rem);
+    /* Chevauchement léger sur le bas du logo + lisibilité sur le visuel */
+    text-shadow:
+      0 0 0.65rem rgba(10, 10, 10, 0.98),
+      0 0 1.1rem rgba(10, 10, 10, 0.88),
+      0 1px 3px rgba(10, 10, 10, 0.95);
+  }
+
+  .hero-title__family {
+    display: inline-block;
+    position: relative;
+  }
+
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: var(--space-sm);
+    max-width: none;
+    margin-inline: auto;
+  }
+
+  @media (min-width: 768px) {
+    .hero-sub {
+      white-space: nowrap;
+      letter-spacing: clamp(0.1em, 0.09em + 0.2vw, 0.18em);
+      font-size: clamp(0.78rem, 1.05vw, 1.05rem);
+    }
+  }
+
+  .hero-baseline {
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    margin-inline: auto;
+    margin-bottom: var(--space-lg);
+    max-width: 38rem;
+  }
+
+  .hero-baseline__l1,
+  .hero-baseline__l2 {
+    display: inline;
+  }
+
+  @media (max-width: 767px) {
+    .hero-baseline {
+      max-width: 22rem;
+      line-height: 1.55;
+    }
+
+    .hero-baseline__sep {
+      display: none;
+    }
+
+    .hero-baseline__l1 {
+      display: block;
+    }
+
+    .hero-baseline__l2 {
+      display: block;
+      margin-top: 0.35em;
+    }
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-sm);
+  }
+
+  /* Scroll indicator */
+  .hero-scroll {
+    position: absolute;
+    bottom: var(--space-md);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .hero-scroll span {
+    display: block;
+    width: 1px;
+    height: 48px;
+    background: var(--accent);
+    opacity: .5;
+    animation: scroll-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scroll-pulse {
+    0%, 100% { transform: scaleY(1); opacity: .5; }
+    50%      { transform: scaleY(.4); opacity: .2; }
+  }
+</style>
