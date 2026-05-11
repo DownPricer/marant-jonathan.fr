@@ -1,0 +1,1149 @@
+---
+/**
+ * Plein écran au chargement de l'accueil uniquement (voir Layout `introSplash`).
+ */
+import site from '../data/site.json';
+import { withBase, withCacheBust } from '../utils/base';
+import { metiersLabelsFromSousTitre } from '../utils/metiers';
+const nomParts = site.nom.trim().split(/\s+/);
+const prenom = nomParts[0] ?? site.nom;
+const nomFamille = nomParts.length > 1 ? nomParts.slice(1).join(' ') : '';
+const introFinAvatarUrl = withCacheBust(withBase('/logo/intro-avatar-fin.webp'));
+/** Visuels intro (fichiers dans `public/images/intro/`). */
+const imgMenuiserie = withBase('/images/intro/menuiserie3.webp');
+const imgCharpentier = withBase('/images/intro/charpentier.webp');
+const imgEbeniste = withBase('/images/intro/ebeniste2.webp');
+const imgCouvreur = withBase('/images/intro/couvreur.webp');
+const imgZingueur = withBase('/images/intro/zinc3.webp');
+
+/** Libellés = segments du sous-titre (points médians et tirets) — 5 métiers en intro */
+const metierMots = metiersLabelsFromSousTitre(site.sousTitre);
+const metierCycle =
+  metierMots.length >= 5
+    ? metierMots.slice(0, 5)
+    : ['Menuisier', 'Charpentier', 'Ebeniste', 'Couvreur', 'Zingueur'];
+---
+
+<div id="intro-splash-root" class="intro-splash-root" aria-modal="true" role="dialog" aria-label="Présentation">
+  <div class="intro" id="intro-splash-panel" aria-live="polite">
+    <div class="intro-splash-audio-wrap">
+      <button
+        type="button"
+        class="intro-splash-audio"
+        id="intro-splash-audio-toggle"
+        aria-pressed="false"
+        aria-label="Couper le son"
+        title="Son activé — cliquer pour couper"
+      >
+        <svg class="intro-splash-audio__svg intro-splash-audio__svg--on" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"
+          />
+        </svg>
+        <svg class="intro-splash-audio__svg intro-splash-audio__svg--off" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <div class="intro-stage">
+      <div class="intro-hero-cluster">
+        <div
+          class="intro-metier-visuals"
+          id="metier-visuals"
+          aria-hidden="true"
+        >
+          <div class="intro-metier-ring">
+            <div class="intro-metier-slide intro-metier-slide--0">
+              <img src={imgMenuiserie} alt="" width="800" height="800" decoding="async" />
+            </div>
+            <div class="intro-metier-slide intro-metier-slide--1">
+              <img src={imgCharpentier} alt="" width="800" height="800" decoding="async" />
+            </div>
+            <div class="intro-metier-slide intro-metier-slide--2">
+              <img src={imgEbeniste} alt="" width="800" height="800" decoding="async" />
+            </div>
+            <div class="intro-metier-slide intro-metier-slide--3">
+              <img src={imgCouvreur} alt="" width="800" height="800" decoding="async" />
+            </div>
+            <div class="intro-metier-slide intro-metier-slide--4">
+              <img src={imgZingueur} alt="" width="800" height="800" decoding="async" />
+            </div>
+          </div>
+        </div>
+
+        <div class="intro-avatar-stack" id="avatar-stack" aria-hidden="true">
+          <div class="intro-avatar-stack__motion">
+            <div class="intro-avatar-frame">
+              <div class="intro-avatar-inner">
+                <img
+                  class="intro-avatar-img"
+                  src={introFinAvatarUrl}
+                  alt=""
+                  width="1024"
+                  height="972"
+                  decoding="async"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="intro-name-block">
+          <div class="intro-name-layer">
+            <span class="intro-given">{prenom}</span>
+            {nomFamille && <span class="intro-family">{nomFamille}</span>}
+          </div>
+          <div class="intro-line" aria-hidden="true"></div>
+
+          <div class="intro-roles-wrap" id="roles-wrap">
+            <div class="intro-roles-cycle" id="roles-cycle" aria-label="Métiers">
+              {metierCycle.map((label, i) => (
+                <span class="intro-role" data-i={String(i)}>
+                  {label}
+                </span>
+              ))}
+            </div>
+            <div class="intro-roles-trio" id="roles-trio" aria-hidden="true">
+              <p class="intro-roles-trio-line">{site.sousTitre}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" class="intro-splash__skip" id="intro-splash-skip">Passer</button>
+</div>
+
+<style is:global>
+  body.intro-splash-active {
+    overflow: hidden;
+    touch-action: none;
+  }
+</style>
+
+<style>
+  .intro-splash-root {
+    --fluid: clamp(0.85rem, 0.55rem + 1.1vw, 1.05rem);
+    --t-brand: calc(var(--fluid) * 1.12);
+    --t-brand-sub: calc(var(--fluid) * 0.68);
+    --t-nav: calc(var(--fluid) * 0.74);
+    --t-name-lg: clamp(2.15rem, 1.1rem + 5.2vw, 3.35rem);
+    --t-name-md: clamp(1.75rem, 0.95rem + 3.8vw, 2.65rem);
+    --t-role: calc(var(--fluid) * 0.82);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+    position: fixed;
+    top: var(--header-height);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1200;
+    height: auto;
+    min-height: 0;
+    font-family: var(--font-body);
+    font-size: var(--fluid);
+    -webkit-font-smoothing: antialiased;
+    pointer-events: auto;
+    transition: opacity 0.35s var(--ease-out), visibility 0.35s;
+  }
+
+  .intro-splash-root.intro-splash-root--gone {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .intro-splash__skip {
+    position: absolute;
+    bottom: calc(0.55rem + env(safe-area-inset-bottom, 0px));
+    right: calc(0.55rem + env(safe-area-inset-right, 0px));
+    z-index: 5;
+    font: inherit;
+    font-size: calc(var(--fluid) * 0.68);
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(245, 240, 235, 0.32);
+    background: transparent;
+    border: none;
+    padding: 0.4rem 0.5rem;
+    cursor: pointer;
+    transition: color 0.25s var(--ease-out), opacity 0.25s;
+  }
+
+  .intro-splash__skip:hover,
+  .intro-splash__skip:focus-visible {
+    color: rgba(212, 170, 125, 0.85);
+    outline: none;
+  }
+
+  .intro-splash__skip:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .intro {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    background:
+      radial-gradient(100% 70% at 50% -10%, rgba(184, 149, 106, 0.06) 0%, transparent 50%),
+      radial-gradient(90% 55% at 100% 80%, rgba(184, 149, 106, 0.035) 0%, transparent 45%),
+      var(--bg);
+    opacity: 0;
+    animation: intro-fade-in 0.4s var(--ease-out) forwards;
+  }
+
+  @keyframes intro-fade-in {
+    to { opacity: 1; }
+  }
+
+  .intro-splash-audio-wrap {
+    position: absolute;
+    top: max(0.45rem, env(safe-area-inset-top, 0px));
+    right: clamp(1rem, 4vw, 2.25rem);
+    z-index: 10;
+  }
+
+  .intro-splash-audio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    padding: 0;
+    border: 1px solid rgba(42, 41, 38, 0.75);
+    border-radius: 50%;
+    background: rgba(12, 12, 11, 0.65);
+    color: rgba(245, 240, 235, 0.4);
+    cursor: pointer;
+    transition:
+      color 0.2s var(--ease-out),
+      border-color 0.2s,
+      background 0.2s;
+  }
+
+  .intro-splash-audio:hover,
+  .intro-splash-audio:focus-visible {
+    color: var(--accent-light);
+    border-color: rgba(184, 149, 106, 0.4);
+    background: rgba(22, 21, 19, 0.88);
+    outline: none;
+  }
+
+  .intro-splash-audio.is-muted {
+    color: rgba(154, 149, 144, 0.55);
+  }
+
+  .intro-splash-audio__svg {
+    display: block;
+  }
+
+  .intro-splash-audio.is-muted .intro-splash-audio__svg--on {
+    display: none;
+  }
+
+  .intro-splash-audio:not(.is-muted) .intro-splash-audio__svg--off {
+    display: none;
+  }
+
+  .intro-stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem clamp(1rem, 4vw, 2.5rem) 1.5rem;
+    position: relative;
+  }
+
+  .intro-hero-cluster {
+    position: relative;
+    width: 100%;
+    max-width: min(32rem, 100%);
+    margin-inline: auto;
+    isolation: isolate;
+    --avatar-size: min(14rem, 62vw);
+    padding-bottom: 0.5rem;
+  }
+
+  .intro-name-block {
+    position: relative;
+    z-index: 2;
+    max-width: 100%;
+  }
+
+  .intro-name-layer {
+    position: relative;
+    z-index: 2;
+    padding-top: calc(var(--avatar-size) * 0.34 + clamp(0.2rem, 1.5vw, 0.85rem));
+    text-align: center;
+  }
+
+  .intro-given,
+  .intro-family {
+    font-family: var(--font-hero-title);
+    font-weight: 700;
+    line-height: 1.04;
+    letter-spacing: -0.034em;
+    display: block;
+    opacity: 0;
+    transform: translateY(22px) scale(0.92);
+    filter: blur(6px);
+  }
+
+  .intro-given {
+    font-size: var(--t-name-lg);
+    color: var(--text);
+    text-shadow:
+      0 0 1rem rgba(10, 10, 10, 0.92),
+      0 0 2rem rgba(10, 10, 10, 0.65),
+      0 2px 3px rgba(10, 10, 10, 0.88);
+  }
+
+  .intro-given.is-in {
+    animation: name-pop 0.78s var(--spring) forwards;
+  }
+
+  .intro-family {
+    font-size: var(--t-name-md);
+    color: rgba(245, 240, 235, 0.9);
+    margin-top: 0.15rem;
+    text-shadow:
+      0 0 1rem rgba(10, 10, 10, 0.92),
+      0 0 2rem rgba(10, 10, 10, 0.65),
+      0 2px 3px rgba(10, 10, 10, 0.88);
+  }
+
+  .intro-family.is-in {
+    animation: name-pop 0.7s var(--spring) forwards;
+  }
+
+  @keyframes name-pop {
+    0% {
+      opacity: 0;
+      transform: translateY(22px) scale(0.92);
+      filter: blur(6px);
+    }
+    72% {
+      opacity: 1;
+      filter: blur(0);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+
+  .intro-line {
+    position: relative;
+    z-index: 2;
+    width: 0;
+    max-width: 12rem;
+    height: 1px;
+    margin: 0.85rem auto 0;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  .intro-line.is-in {
+    animation: line-grow 0.65s var(--ease-out) forwards;
+  }
+
+  @keyframes line-grow {
+    to { width: min(70%, 12rem); }
+  }
+
+  .intro-roles-wrap {
+    position: relative;
+    z-index: 2;
+    margin-top: 0.85rem;
+    min-height: 2.85em;
+  }
+
+  .intro-roles-cycle {
+    position: relative;
+    min-height: 1.65em;
+    font-size: var(--t-role);
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    transition:
+      opacity 0.35s var(--ease-in-out),
+      transform 0.35s var(--ease-out);
+  }
+
+  .intro-roles-wrap.is-trio .intro-roles-cycle {
+    position: absolute;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  .intro-role {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%) translateY(10px);
+    white-space: nowrap;
+    opacity: 0;
+    transition:
+      opacity 0.48s var(--ease-in-out),
+      transform 0.52s var(--spring);
+  }
+
+  .intro-role.is-on {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .intro-role.is-off {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+    transition:
+      opacity 0.38s var(--ease-in-out),
+      transform 0.42s var(--ease-out);
+  }
+
+  .intro-roles-trio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.5rem;
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  .intro-roles-wrap.is-trio .intro-roles-trio {
+    position: relative;
+    visibility: visible;
+    pointer-events: auto;
+    animation: trio-in 0.45s var(--ease-out) forwards;
+  }
+
+  @keyframes trio-in {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .intro-roles-trio-line {
+    margin: 0;
+    max-width: 100%;
+    font-size: clamp(0.72rem, 0.62rem + 0.55vw, 0.88rem);
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-align: center;
+    text-wrap: balance;
+    line-height: 1.45;
+    color: var(--accent-light);
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  .intro-roles-wrap.is-trio .intro-roles-trio-line {
+    animation: trio-line-in 0.4s var(--ease-out) 0.08s forwards;
+  }
+
+  @keyframes trio-line-in {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .intro-metier-visuals {
+    position: absolute;
+    left: 50%;
+    top: clamp(-2.25rem, -5vh, -0.75rem);
+    width: var(--avatar-size);
+    max-width: 100%;
+    transform: translateX(-50%) translateY(-22%);
+    z-index: 1;
+    pointer-events: none;
+    visibility: hidden;
+    opacity: 0;
+    transition:
+      opacity 0.3s var(--ease-out),
+      visibility 0.3s;
+  }
+
+  .intro-metier-visuals.intro-metier-visuals--on {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .intro-metier-ring {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: radial-gradient(
+      circle at 50% 45%,
+      rgba(30, 30, 28, 0.5) 0%,
+      var(--surface) 72%
+    );
+    box-shadow:
+      0 0 0 1px rgba(184, 149, 106, 0.08),
+      0 16px 44px rgba(0, 0, 0, 0.5);
+  }
+
+  .intro-metier-slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8%;
+    opacity: 0;
+    transform: scale(0.88);
+    transition:
+      opacity 0.35s var(--ease-out),
+      transform 0.4s var(--spring);
+  }
+
+  .intro-metier-visuals[data-active='0'] .intro-metier-slide--0,
+  .intro-metier-visuals[data-active='1'] .intro-metier-slide--1,
+  .intro-metier-visuals[data-active='2'] .intro-metier-slide--2,
+  .intro-metier-visuals[data-active='3'] .intro-metier-slide--3,
+  .intro-metier-visuals[data-active='4'] .intro-metier-slide--4 {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .intro-metier-slide img {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 28px rgba(0, 0, 0, 0.55));
+  }
+
+  .intro-avatar-stack {
+    position: absolute;
+    left: 50%;
+    top: clamp(-2.25rem, -5vh, -0.75rem);
+    width: var(--avatar-size);
+    max-width: 100%;
+    transform: translateX(-50%) translateY(-22%);
+    z-index: 0;
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  .intro-avatar-stack__motion {
+    opacity: 0;
+    transform: translateY(0.5rem) scale(0.9);
+    filter: blur(8px);
+  }
+
+  .intro-avatar-stack.intro-avatar-stack--show {
+    visibility: visible;
+  }
+
+  .intro-avatar-stack.intro-avatar-stack--show .intro-avatar-stack__motion {
+    animation: avatar-emerge 0.6s var(--spring) forwards;
+  }
+
+  @keyframes avatar-emerge {
+    0% {
+      opacity: 0;
+      transform: translateY(0.5rem) scale(0.9);
+      filter: blur(8px);
+    }
+    50% {
+      filter: blur(0);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+
+  .intro-avatar-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    opacity: 0.86;
+    box-shadow:
+      0 0 0 1px rgba(184, 149, 106, 0.1),
+      0 18px 48px rgba(0, 0, 0, 0.55);
+  }
+
+  .intro-avatar-frame::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    box-shadow: inset 0 0 0 1px rgba(184, 149, 106, 0.2);
+  }
+
+  .intro-avatar-stack--show .intro-avatar-frame::after {
+    animation: avatar-ring-fade 0.8s var(--ease-out) 0.1s forwards;
+  }
+
+  @keyframes avatar-ring-fade {
+    from { opacity: 0; }
+    30%  { opacity: 1; }
+    to   { opacity: 0.5; }
+  }
+
+  .intro-avatar-inner {
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    transform: scale(1.02);
+  }
+
+  .intro-avatar-inner picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .intro-avatar-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+  }
+
+  .intro-avatar-stack.intro-avatar-stack--show .intro-avatar-inner {
+    animation: avatar-inner-settle 0.7s var(--ease-out) forwards;
+  }
+
+  @keyframes avatar-inner-settle {
+    from {
+      transform: scale(1.08);
+      opacity: 0.85;
+    }
+    to {
+      transform: scale(1.02);
+      opacity: 1;
+    }
+  }
+
+  .intro.is-exit {
+    animation: intro-exit 0.5s var(--ease-in-out) forwards;
+  }
+
+  @keyframes intro-exit {
+    to {
+      opacity: 0;
+      transform: scale(1.02);
+      filter: blur(8px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .intro,
+    .intro-given,
+    .intro-family,
+    .intro-line,
+    .intro-avatar-stack,
+    .intro-avatar-stack__motion,
+    .intro-avatar-inner,
+    .intro-avatar-img,
+    .intro-metier-visuals,
+    .intro-metier-slide,
+    .intro-roles-trio,
+    .intro-roles-trio-line {
+      animation: none !important;
+      clip-path: none !important;
+      transition: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+      filter: none !important;
+    }
+    .intro-given, .intro-family {
+      opacity: 1 !important;
+      transform: none !important;
+      filter: none !important;
+    }
+    .intro-line {
+      width: min(70%, 12rem);
+    }
+    .intro-metier-visuals {
+      visibility: visible;
+      opacity: 1;
+      transform: translateX(-50%) translateY(-22%);
+    }
+    .intro-metier-visuals[data-active='4'] .intro-metier-slide--4 {
+      opacity: 1;
+      transform: none;
+    }
+    .intro-avatar-stack {
+      visibility: visible;
+      transform: translateX(-50%) translateY(-22%);
+    }
+    .intro-avatar-stack__motion {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+    .intro-roles-wrap.is-trio .intro-roles-cycle {
+      display: none;
+    }
+    .intro-roles-trio {
+      opacity: 1;
+      transform: none;
+      visibility: visible;
+    }
+    .intro-roles-trio-line {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    var root = document.getElementById('intro-splash-root');
+    var intro = document.getElementById('intro-splash-panel');
+    var skipBtn = document.getElementById('intro-splash-skip');
+    if (!root || !intro) return;
+
+    document.body.classList.add('intro-splash-active');
+
+    var rolesCycle = document.getElementById('roles-cycle');
+    var rolesWrap = document.getElementById('roles-wrap');
+    var rolesTrio = document.getElementById('roles-trio');
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* ── Audio : compatible mobile ────────────────────────── */
+    var audioCtx: AudioContext | null = null;
+    var soundOn = true;
+    var audioBtn = document.getElementById('intro-splash-audio-toggle');
+    var audioUnlocked = false;
+    var pendingSounds: Array<(ctx: AudioContext) => void> = [];
+
+    function getOrCreateCtx(): AudioContext | null {
+      if (reduced) return null;
+      if (!audioCtx) {
+        var Ctor = window.AudioContext || (window as any).webkitAudioContext;
+        if (!Ctor) return null;
+        audioCtx = new Ctor();
+      }
+      return audioCtx;
+    }
+
+    function tryUnlock() {
+      var ctx = getOrCreateCtx();
+      if (!ctx || audioUnlocked) return;
+      if (ctx.state === 'suspended') {
+        ctx.resume().then(function () {
+          audioUnlocked = true;
+          flushPending();
+        }).catch(function () {});
+      } else {
+        audioUnlocked = true;
+        flushPending();
+      }
+    }
+
+    function flushPending() {
+      if (!audioCtx || audioCtx.state !== 'running') return;
+      var q = pendingSounds.splice(0);
+      for (var k = 0; k < q.length; k++) {
+        try { q[k](audioCtx); } catch (_) {}
+      }
+    }
+
+    function playSound(fn: (ctx: AudioContext) => void) {
+      if (!soundOn || reduced) return;
+      var ctx = getOrCreateCtx();
+      if (!ctx) return;
+      if (ctx.state === 'running') {
+        try { fn(ctx); } catch (_) {}
+      } else {
+        pendingSounds.push(fn);
+        ctx.resume().then(flushPending).catch(function () {});
+      }
+    }
+
+    /** Geste utilisateur : débloque l'AudioContext (indispensable mobile) */
+    function onGesture() {
+      tryUnlock();
+      document.removeEventListener('pointerdown', onGesture, true);
+      document.removeEventListener('touchstart', onGesture, true);
+      document.removeEventListener('click', onGesture, true);
+    }
+    document.addEventListener('pointerdown', onGesture, true);
+    document.addEventListener('touchstart', onGesture, { capture: true, passive: true } as any);
+    document.addEventListener('click', onGesture, true);
+
+    getOrCreateCtx();
+
+    /* ── Sons ────────────────────────────────────────────── */
+    function playTick(pitch: number, vol: number) {
+      playSound(function (ctx) {
+        var t = ctx.currentTime;
+        var osc = ctx.createOscillator();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(pitch, t);
+        osc.frequency.exponentialRampToValueAtTime(pitch * 0.6, t + 0.06);
+        var g = ctx.createGain();
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(vol, t + 0.005);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+        osc.connect(g);
+        g.connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + 0.1);
+      });
+    }
+
+    function playWhoosh() {
+      playSound(function (ctx) {
+        var t = ctx.currentTime;
+        var dur = 0.18;
+        var rate = ctx.sampleRate;
+        var n = Math.max(1, Math.floor(rate * dur));
+        var buf = ctx.createBuffer(1, n, rate);
+        var ch = buf.getChannelData(0);
+        for (var i = 0; i < n; i++) {
+          var env = Math.sin((i / n) * Math.PI);
+          ch[i] = (Math.random() * 2 - 1) * env * env;
+        }
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        var hp = ctx.createBiquadFilter();
+        hp.type = 'highpass';
+        hp.frequency.setValueAtTime(600, t);
+        hp.frequency.exponentialRampToValueAtTime(2400, t + dur);
+        hp.Q.value = 0.4;
+        var g = ctx.createGain();
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(0.04, t + 0.025);
+        g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+        src.connect(hp);
+        hp.connect(g);
+        g.connect(ctx.destination);
+        src.start(t);
+        src.stop(t + dur + 0.02);
+      });
+    }
+
+    /** Son image : bruit filtré court + micro-click — sobre, mécanique */
+    function playSlide() {
+      playSound(function (ctx) {
+        var t = ctx.currentTime;
+        var dur = 0.09;
+        var rate = ctx.sampleRate;
+        var n = Math.max(1, Math.floor(rate * dur));
+        var buf = ctx.createBuffer(1, n, rate);
+        var ch = buf.getChannelData(0);
+        for (var i = 0; i < n; i++) {
+          var env = Math.pow(1 - i / n, 2);
+          ch[i] = (Math.random() * 2 - 1) * env;
+        }
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        var bp = ctx.createBiquadFilter();
+        bp.type = 'bandpass';
+        bp.frequency.setValueAtTime(2200, t);
+        bp.frequency.exponentialRampToValueAtTime(1000, t + dur);
+        bp.Q.value = 1.2;
+        var gNoise = ctx.createGain();
+        gNoise.gain.setValueAtTime(0.032, t);
+        gNoise.gain.exponentialRampToValueAtTime(0.001, t + dur);
+        src.connect(bp);
+        bp.connect(gNoise);
+        gNoise.connect(ctx.destination);
+        src.start(t);
+        src.stop(t + dur + 0.01);
+        /* micro-click d'accroche */
+        var osc = ctx.createOscillator();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(1400, t);
+        osc.frequency.exponentialRampToValueAtTime(700, t + 0.035);
+        var gClick = ctx.createGain();
+        gClick.gain.setValueAtTime(0, t);
+        gClick.gain.linearRampToValueAtTime(0.018, t + 0.003);
+        gClick.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+        osc.connect(gClick);
+        gClick.connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + 0.05);
+      });
+    }
+
+    /** Son final : carillon discret à deux harmoniques — clair, professionnel */
+    function playRevealFinal() {
+      playSound(function (ctx) {
+        var t = ctx.currentTime;
+        /* fondamentale : Mi5 (659 Hz) */
+        var o1 = ctx.createOscillator();
+        o1.type = 'sine';
+        o1.frequency.setValueAtTime(659, t);
+        var g1 = ctx.createGain();
+        g1.gain.setValueAtTime(0, t);
+        g1.gain.linearRampToValueAtTime(0.048, t + 0.03);
+        g1.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+        o1.connect(g1);
+        g1.connect(ctx.destination);
+        o1.start(t);
+        o1.stop(t + 0.6);
+        /* quinte : Si5 (987 Hz) */
+        var o2 = ctx.createOscillator();
+        o2.type = 'sine';
+        o2.frequency.setValueAtTime(987, t);
+        var g2 = ctx.createGain();
+        g2.gain.setValueAtTime(0, t);
+        g2.gain.linearRampToValueAtTime(0.026, t + 0.045);
+        g2.gain.exponentialRampToValueAtTime(0.001, t + 0.42);
+        o2.connect(g2);
+        g2.connect(ctx.destination);
+        o2.start(t);
+        o2.stop(t + 0.45);
+        /* sub-fondamentale : Do5 (523 Hz) pour l'assise */
+        var o3 = ctx.createOscillator();
+        o3.type = 'sine';
+        o3.frequency.setValueAtTime(523, t);
+        var g3 = ctx.createGain();
+        g3.gain.setValueAtTime(0, t);
+        g3.gain.linearRampToValueAtTime(0.02, t + 0.02);
+        g3.gain.exponentialRampToValueAtTime(0.001, t + 0.32);
+        o3.connect(g3);
+        g3.connect(ctx.destination);
+        o3.start(t);
+        o3.stop(t + 0.35);
+      });
+    }
+
+    function playReveal() {
+      playRevealFinal();
+    }
+
+    /* ── UI toggle son ───────────────────────────────────── */
+    function syncAudioToggleUi() {
+      if (!audioBtn) return;
+      audioBtn.classList.toggle('is-muted', !soundOn);
+      audioBtn.setAttribute('aria-pressed', soundOn ? 'false' : 'true');
+      audioBtn.setAttribute('aria-label', soundOn ? 'Couper le son' : 'Activer le son');
+      audioBtn.setAttribute(
+        'title',
+        soundOn ? 'Son activé — cliquer pour couper' : 'Son coupé — cliquer pour réactiver'
+      );
+    }
+
+    if (audioBtn) {
+      audioBtn.addEventListener('click', function () {
+        tryUnlock();
+        soundOn = !soundOn;
+        syncAudioToggleUi();
+        if (soundOn) playTick(600, 0.04);
+      });
+    }
+    syncAudioToggleUi();
+
+    /* ── Timing ──────────────────────────────────────────── */
+    var NAME_AT        = reduced ? 80  : 220;
+    var FAMILY_AT      = reduced ? 160 : 480;
+    var LINE_AT        = reduced ? 240 : 760;
+    var ROLE_START     = reduced ? 360 : 920;
+    var ROLE_STEP      = reduced ? 420 : 1350;
+    var TRIO_DELAY     = reduced ? 160 : 520;
+    var AVATAR_DELAY   = reduced ? 100 : 320;
+    var HOLD_FINALE    = reduced ? 900 : 3200;
+    var EXIT_MS        = reduced ? 250 : 500;
+
+    var timers: number[] = [];
+    var exitTimer: number;
+
+    function schedule(fn: () => void, ms: number) {
+      var id = window.setTimeout(fn, ms);
+      timers.push(id);
+      return id;
+    }
+
+    function clearAllTimers() {
+      for (var i = 0; i < timers.length; i++) clearTimeout(timers[i]);
+      timers = [];
+      clearTimeout(exitTimer);
+    }
+
+    /* ── Éléments ────────────────────────────────────────── */
+    function getRoles() {
+      return rolesCycle
+        ? Array.prototype.slice.call(rolesCycle.querySelectorAll('.intro-role'))
+        : [];
+    }
+
+    function hideMetierVisuals() {
+      var el = document.getElementById('metier-visuals');
+      if (!el) return;
+      el.classList.remove('intro-metier-visuals--on');
+      el.removeAttribute('data-active');
+      el.setAttribute('aria-hidden', 'true');
+    }
+
+    function syncMetierVisual(index: number) {
+      var el = document.getElementById('metier-visuals');
+      if (!el) return;
+      el.classList.add('intro-metier-visuals--on');
+      el.setAttribute('data-active', String(index));
+      el.setAttribute('aria-hidden', 'false');
+    }
+
+    function setRole(i: number) {
+      var nodes = getRoles();
+      nodes.forEach(function (el: HTMLElement, j: number) {
+        el.classList.remove('is-on', 'is-off');
+        if (j === i) el.classList.add('is-on');
+        else if (j < i) el.classList.add('is-off');
+      });
+      syncMetierVisual(i);
+      playSlide();
+    }
+
+    function removeSplash() {
+      if (!root || root.dataset.gone === '1') return;
+      document.removeEventListener('keydown', onKeydown);
+      document.removeEventListener('pointerdown', onGesture, true);
+      document.removeEventListener('touchstart', onGesture, true);
+      document.removeEventListener('click', onGesture, true);
+      root.dataset.gone = '1';
+      document.body.classList.remove('intro-splash-active');
+      root.classList.add('intro-splash-root--gone');
+      window.setTimeout(function () { root.remove(); }, 380);
+    }
+
+    function dismissAfterExit() {
+      if (intro.classList.contains('is-exit')) return;
+      intro.classList.add('is-exit');
+      playWhoosh();
+      window.setTimeout(removeSplash, EXIT_MS);
+    }
+
+    function showTrio() {
+      hideMetierVisuals();
+      if (!rolesWrap || !rolesTrio) return;
+      rolesWrap.classList.add('is-trio');
+      rolesTrio.setAttribute('aria-hidden', 'false');
+      playReveal();
+    }
+
+    function showAvatar() {
+      var stack = document.getElementById('avatar-stack');
+      if (stack) {
+        stack.classList.add('intro-avatar-stack--show');
+        stack.setAttribute('aria-hidden', 'false');
+      }
+      playRevealFinal();
+    }
+
+    function scheduleExitFrom(ms: number) {
+      clearTimeout(exitTimer);
+      exitTimer = window.setTimeout(dismissAfterExit, ms);
+    }
+
+    /* ── Séquence principale ─────────────────────────────── */
+    function startSequence() {
+      clearAllTimers();
+      if (rolesWrap) rolesWrap.classList.remove('is-trio');
+      if (rolesTrio) rolesTrio.setAttribute('aria-hidden', 'true');
+
+      var stack = document.getElementById('avatar-stack');
+      if (stack) {
+        stack.classList.remove('intro-avatar-stack--show');
+        stack.setAttribute('aria-hidden', 'true');
+      }
+      hideMetierVisuals();
+      intro.classList.remove('is-exit');
+
+      var givenEl = intro.querySelector('.intro-given');
+      var familyEl = intro.querySelector('.intro-family');
+      var lineEl = intro.querySelector('.intro-line');
+
+      if (reduced) {
+        if (givenEl) givenEl.classList.add('is-in');
+        if (familyEl) familyEl.classList.add('is-in');
+        if (lineEl) lineEl.classList.add('is-in');
+        setRole(4);
+        schedule(function () {
+          showTrio();
+          showAvatar();
+        }, 300);
+        scheduleExitFrom(300 + HOLD_FINALE);
+        return;
+      }
+
+      getRoles().forEach(function (el: HTMLElement) {
+        el.classList.remove('is-on', 'is-off');
+      });
+
+      schedule(function () {
+        if (givenEl) givenEl.classList.add('is-in');
+      }, NAME_AT);
+
+      schedule(function () {
+        if (familyEl) familyEl.classList.add('is-in');
+      }, FAMILY_AT);
+
+      schedule(function () {
+        if (lineEl) lineEl.classList.add('is-in');
+      }, LINE_AT);
+
+      for (var r = 0; r < 5; r++) {
+        (function (idx) {
+          schedule(function () { setRole(idx); }, ROLE_START + idx * ROLE_STEP);
+        })(r);
+      }
+
+      var trioAt = ROLE_START + 4 * ROLE_STEP + TRIO_DELAY;
+
+      schedule(function () { showTrio(); }, trioAt);
+      schedule(function () { showAvatar(); }, trioAt + AVATAR_DELAY);
+
+      var total = trioAt + AVATAR_DELAY + HOLD_FINALE;
+      scheduleExitFrom(total);
+    }
+
+    function onSkip() {
+      if (root.dataset.gone === '1') return;
+      clearAllTimers();
+      dismissAfterExit();
+    }
+
+    function onKeydown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onSkip();
+        document.removeEventListener('keydown', onKeydown);
+      }
+    }
+
+    if (skipBtn) skipBtn.addEventListener('click', onSkip);
+    document.addEventListener('keydown', onKeydown);
+    startSequence();
+  })();
+</script>

@@ -1,0 +1,3 @@
+# Utilisé seulement quand vous déployez TOUT le dossier du projet (glisser-déposer).
+# Le site généré est dans /dist/ après : npm run build:netlify-drop
+/   /dist/   302

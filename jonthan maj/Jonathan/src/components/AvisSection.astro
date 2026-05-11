@@ -1,0 +1,88 @@
+---
+import site from '../data/site.json';
+import GoogleAvisLink from './GoogleAvisLink.astro';
+
+const avis = site.avis ?? [];
+---
+
+{avis.length > 0 && (
+  <section class="section avis" id="avis">
+    <div class="container">
+      <p class="overline reveal">Confiance</p>
+      <h2 class="reveal section-title-one-line">Ils témoignent</h2>
+      <p class="avis-intro text-dim reveal">
+        Extraits d’avis de nos clients. Consultez aussi les avis sur Google.
+      </p>
+
+      <div class="avis-google-row reveal">
+        <GoogleAvisLink />
+      </div>
+
+      <div class="avis-grid">
+        {avis.map((a, i) => (
+          <blockquote class="avis-card reveal" style={`transition-delay: ${i * 0.08}s`}>
+            <p>&laquo; {a.texte} &raquo;</p>
+            <footer>— {a.auteur}</footer>
+          </blockquote>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .avis h2 {
+    margin-block: 0.5rem var(--space-sm);
+  }
+
+  .avis-intro {
+    max-width: 55ch;
+    margin-bottom: var(--space-sm);
+    font-size: 0.95rem;
+  }
+
+  .avis-google-row {
+    margin-bottom: var(--space-lg);
+  }
+
+  .avis-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+
+  @media (min-width: 768px) {
+    .avis-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .avis-card {
+    margin: 0;
+    padding: var(--space-md);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: border-color var(--transition);
+  }
+
+  .avis-card:hover {
+    border-color: var(--accent);
+  }
+
+  .avis-card p {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.55;
+    color: var(--text);
+    max-width: none;
+    margin-bottom: var(--space-sm);
+  }
+
+  .avis-card footer {
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+  }
+</style>

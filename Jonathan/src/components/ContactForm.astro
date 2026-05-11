@@ -1,5 +1,6 @@
 ---
 import site from '../data/site.json';
+import { telHref } from '../utils/phone';
 import { withBase } from '../utils/base';
 import GoogleAvisLink from './GoogleAvisLink.astro';
 
@@ -27,7 +28,7 @@ const formulaireEnLigne = false;
           <div class="contact-item">
             <span class="contact-label">Téléphone</span>
             {site.telephone ? (
-              <a href={`tel:${site.telephone.replace(/\s/g, '')}`}>{site.telephone}</a>
+              <a href={`tel:${telHref(site.telephone)}`}>{site.telephone}</a>
             ) : (
               <span class="text-dim">{site.telephoneHint}</span>
             )}

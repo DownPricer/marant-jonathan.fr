@@ -43,6 +43,15 @@
     "codePostal": "30500",
     "ville": "Saint-Ambroix"
   },
+  "juridique": {
+    "denomination": "Jonathan MARANT",
+    "forme": "Entrepreneur individuel",
+    "siren": "808 501 837",
+    "siret": "808 501 837 00021",
+    "codeNaf": "4332A",
+    "libelleNaf": "Travaux de menuiserie bois et PVC",
+    "tvaIntracommunautaire": "FR56808501837"
+  },
   "horaires": "Lundi – Vendredi : 8h00 – 19h00 · Samedi et dimanche : fermé",
   "zone": "Saint-Ambroix (Gard) et environs",
   "pagesJaunesUrl": "https://pagesjaunes.fr/pros/61106267",
@@ -98,6 +107,55 @@
       "image": "/images/metiers/zinguerie.svg"
     }
   ],
+  "faq": [
+    {
+      "question": "Dans quelle zone intervenez-vous ?",
+      "answer": "Interventions autour de Saint-Ambroix (Gard), dans les Cévennes et plus largement en Occitanie selon la nature du projet. Indiquez votre commune lors du contact pour vérifier la faisabilité du déplacement."
+    },
+    {
+      "question": "Proposez-vous des devis gratuits ?",
+      "answer": "Oui. Après prise de contact (téléphone, email ou formulaire), un devis gratuit peut être établi selon la complexité du projet et les informations fournies (plans, photos, visite si nécessaire)."
+    },
+    {
+      "question": "Quels types de travaux réalisez-vous ?",
+      "answer": "Menuiserie et agencements bois sur mesure, ébénisterie et mobilier, charpente bois, zinguerie (gouttières, chéneaux, étanchéité), couverture et travaux de toiture — neuf et rénovation, pour les particuliers et les professionnels."
+    },
+    {
+      "question": "Travaillez-vous avec les particuliers et les entreprises ?",
+      "answer": "Oui. L’activité couvre les chantiers chez les particuliers (habitat, extensions, aménagements) ainsi que des besoins professionnels selon les dossiers."
+    },
+    {
+      "question": "Comment vous contacter pour un projet ?",
+      "answer": "Par téléphone, par email ou via le formulaire de contact du site. Décrivez votre besoin (type de travaux, localisation, délais souhaités) pour un premier échange."
+    },
+    {
+      "question": "Êtes-vous assuré pour les chantiers ?",
+      "answer": "L’entreprise est déclarée en activité de menuiserie et travaux associés avec assurance décennale pour les opérations concernées par la réglementation. Les garanties applicables sont précisées sur le devis et les contrats."
+    }
+  ],
+  "howToDevis": {
+    "name": "Obtenir un devis pour vos travaux",
+    "description": "Démarche type pour une demande de devis personnalisée (menuiserie, charpente, zinguerie, couverture).",
+    "totalTime": "P7D",
+    "steps": [
+      {
+        "name": "Nous contacter",
+        "text": "Utilisez le formulaire de contact, l’email ou le téléphone en indiquant le type de travaux, la commune et, si possible, des photos ou plans."
+      },
+      {
+        "name": "Échange et précisions",
+        "text": "Un retour est fait pour affiner le besoin : dimensions, matériaux souhaités, contraintes d’accès, délais envisagés."
+      },
+      {
+        "name": "Visite ou relevé si nécessaire",
+        "text": "Pour les chantiers complexes, une visite sur place ou un relevé peut être organisé avant chiffrage."
+      },
+      {
+        "name": "Réception du devis",
+        "text": "Le devis détaille les prestations, les options et les délais ; il sert de base contractuelle une fois accepté."
+      }
+    ]
+  },
   "aPropos": {
     "paragraphe1": "Basé à Saint-Ambroix, Marant Jonathan accompagne les particuliers et les professionnels sur la construction neuve comme sur la rénovation. Menuiserie et ébénisterie, charpente, zinguerie et couverture : des savoir-faire complémentaires pour une prise en charge cohérente de vos projets bois, ameublement et toiture.",
     "paragraphe2": "Le travail est entièrement réalisé à la main, avec le souci du détail et une écoute attentive à chaque demande. Solutions adaptées, délais respectés et finitions soignées : une relation de confiance, du premier échange à la réception des travaux.",

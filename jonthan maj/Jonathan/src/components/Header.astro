@@ -1,0 +1,752 @@
+---
+import site from '../data/site.json';
+import { withBase } from '../utils/base';
+
+/** Espacement entre deux boucles du bandeau mobile (lisible, pas trop serré) */
+const marqueeChunk = `${site.sousTitre}\u00a0\u00a0\u00a0·\u00a0\u00a0\u00a0`;
+
+type NavLink = { href: string; label: string; hash?: string };
+
+const navLinks: NavLink[] = [
+  { href: '/', label: 'Accueil' },
+  { href: '/realisations', label: 'Réalisations' },
+  { href: '/a-propos', label: 'À propos' },
+  { href: '/', label: 'Musique', hash: 'ambient-music' },
+  { href: '/contact', label: 'Contact' },
+];
+---
+
+<header class="site-header" id="site-header">
+  <div class="container header-inner">
+    <a
+      href={withBase('/')}
+      class="logo"
+      aria-label={`${site.marque} — ${site.sousTitre} — accueil`}
+    >
+      <span class="logo-top">
+        <span class="logo-mark-wrap">
+          <picture>
+            <source srcset={`${withBase('/logo/avatar3.webp')}?v=1`} type="image/webp" />
+            <img
+              class="logo-mark"
+              src={`${withBase('/logo/avatar3.png')}?v=1`}
+              alt=""
+              width="956"
+              height="1120"
+              decoding="async"
+              fetchpriority="high"
+            />
+          </picture>
+        </span>
+        <span class="logo-name">{site.nom}</span>
+      </span>
+      <span class="logo-sub logo-sub--desktop">{site.sousTitre}</span>
+      <div class="logo-metiers-marquee" aria-hidden="true">
+        <div class="logo-metiers-marquee__viewport">
+          <div class="logo-metiers-marquee__track">
+            <span class="logo-metiers-marquee__seg">{marqueeChunk}</span>
+            <span class="logo-metiers-marquee__seg">{marqueeChunk}</span>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <nav class="nav-desktop" aria-label="Navigation principale">
+      {navLinks.map((l) => (
+        <a
+          href={l.hash != null ? `${withBase('/')}#${l.hash}` : withBase(l.href)}
+          class:list={['nav-link', { 'nav-link--music': l.hash != null }]}
+        >
+          {l.label}
+        </a>
+      ))}
+    </nav>
+
+    <button
+      class="burger"
+      aria-label="Ouvrir le menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div
+    class="mobile-sheet"
+    id="mobile-menu"
+    aria-hidden="true"
+  >
+    <div class="mobile-sheet-backdrop" data-mobile-close aria-hidden="true"></div>
+    <div
+      class="mobile-sheet-panel"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Menu principal"
+    >
+      <div class="mobile-sheet-top">
+        <div class="mobile-sheet-brand">
+          <div class="mobile-sheet-brand__row">
+            <span class="mobile-sheet-brand__mark-wrap">
+              <picture>
+                <source srcset={`${withBase('/logo/avatar3.webp')}?v=1`} type="image/webp" />
+                <img
+                  class="mobile-sheet-brand__mark"
+                  src={`${withBase('/logo/avatar3.png')}?v=1`}
+                  alt=""
+                  width="956"
+                  height="1120"
+                  decoding="async"
+                />
+              </picture>
+            </span>
+            <span class="mobile-sheet-brand__name">{site.nom}</span>
+          </div>
+          <span class="mobile-sheet-brand__sub">{site.sousTitre}</span>
+        </div>
+        <button
+          type="button"
+          class="mobile-sheet-close"
+          aria-label="Fermer le menu"
+          data-mobile-close
+        >
+          <span class="mobile-sheet-close__icon" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <p class="mobile-sheet-label">Navigation</p>
+
+      <nav class="nav-mobile" aria-label="Navigation mobile">
+        <ul class="nav-mobile-list">
+          {navLinks.map((l, i) => (
+            <li class="nav-mobile-item" style={`--nav-i: ${i}`}>
+              <a
+                href={l.hash != null ? `${withBase('/')}#${l.hash}` : withBase(l.href)}
+                class:list={['nav-mobile-link', { 'nav-mobile-link--music': l.hash != null }]}
+              >
+                <span class="nav-mobile-link__text">{l.label}</span>
+                <span class="nav-mobile-link__chev" aria-hidden="true"></span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline: 0;
+    z-index: 100;
+    transition: background .4s, box-shadow .4s;
+  }
+
+  .site-header.scrolled {
+    background: rgba(10, 10, 10, .92);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 1px 0 var(--border);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: var(--header-height);
+    padding-block: .4rem;
+  }
+
+  .logo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .18rem;
+    max-width: min(78vw, 520px);
+  }
+
+  .logo-top {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: .78rem;
+    min-width: 0;
+  }
+
+  /* Avatar portrait — cadre rond (même logique qu’avant le logo MJ horizontal) */
+  .logo-mark-wrap {
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
+    background: var(--surface);
+    line-height: 0;
+  }
+
+  .logo-mark {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 28%;
+    opacity: .88;
+    transition: opacity .3s;
+  }
+
+  .logo:hover .logo-mark,
+  .logo:focus-visible .logo-mark {
+    opacity: 1;
+  }
+
+  .logo-name {
+    font-family: var(--font-hero-title);
+    font-size: clamp(1.38rem, 3.2vw, 1.62rem);
+    font-weight: 700;
+    font-style: normal;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    line-height: 1.02;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  .logo-sub {
+    font-size: .64rem;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+    color: var(--accent);
+    line-height: 1.35;
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .logo-sub--desktop {
+    display: none;
+  }
+
+  /* Bandeau métiers — mobile uniquement, défilement lent */
+  .logo-metiers-marquee {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-top: 0.12rem;
+  }
+
+  .logo-metiers-marquee__viewport {
+    overflow: hidden;
+    width: 100%;
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      #000 10%,
+      #000 90%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      #000 10%,
+      #000 90%,
+      transparent 100%
+    );
+  }
+
+  .logo-metiers-marquee__track {
+    display: flex;
+    width: max-content;
+    animation: logo-metiers-marquee 52s linear infinite;
+    will-change: transform;
+  }
+
+  .logo-metiers-marquee__seg {
+    flex-shrink: 0;
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    line-height: 1.4;
+    white-space: nowrap;
+    padding-right: 0.25rem;
+  }
+
+  @keyframes logo-metiers-marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .logo-mark-wrap {
+      width: 40px;
+      height: 40px;
+    }
+    .logo-name {
+      font-size: clamp(1.55rem, 2.2vw, 1.92rem);
+    }
+    .logo-sub { font-size: .71rem; letter-spacing: .13em; }
+    .logo-sub--desktop {
+      display: block;
+    }
+    .logo-metiers-marquee {
+      display: none;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .logo {
+      flex: 1;
+      min-width: 0;
+      max-width: min(calc(100vw - 5.5rem), 520px);
+    }
+  }
+
+  @media (max-width: 767px) and (prefers-reduced-motion: reduce) {
+    .logo-metiers-marquee {
+      display: none;
+    }
+
+    .logo-sub--desktop {
+      display: block;
+      font-size: 0.58rem;
+      letter-spacing: 0.09em;
+    }
+  }
+
+  .nav-desktop {
+    display: none;
+    gap: var(--space-md);
+  }
+
+  .nav-link {
+    font-size: .8rem;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    transition: color var(--transition);
+  }
+
+  .nav-link:hover { color: var(--accent); }
+
+  .nav-link--music {
+    color: rgba(212, 170, 125, 0.95);
+    text-shadow: 0 0 20px rgba(184, 149, 106, 0.15);
+  }
+
+  .nav-link--music:hover {
+    color: var(--accent-light);
+  }
+
+  /* Burger */
+  .burger {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px;
+  }
+
+  .burger span {
+    display: block;
+    width: 24px;
+    height: 1.5px;
+    background: var(--text);
+    transition: transform .3s, opacity .3s;
+  }
+
+  .burger[aria-expanded="true"] span:nth-child(1) {
+    transform: translateY(6.5px) rotate(45deg);
+  }
+  .burger[aria-expanded="true"] span:nth-child(2) {
+    opacity: 0;
+  }
+  .burger[aria-expanded="true"] span:nth-child(3) {
+    transform: translateY(-6.5px) rotate(-45deg);
+  }
+
+  /* Menu mobile — panneau latéral + fond */
+  .mobile-sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    justify-content: flex-end;
+    visibility: hidden;
+    pointer-events: none;
+    transition: visibility 0s .45s;
+  }
+
+  .mobile-sheet.open {
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0s;
+  }
+
+  .mobile-sheet-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 5, 5, .72);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    opacity: 0;
+    transition: opacity .4s cubic-bezier(.4, 0, .2, 1);
+    cursor: pointer;
+  }
+
+  .mobile-sheet.open .mobile-sheet-backdrop {
+    opacity: 1;
+  }
+
+  .mobile-sheet-panel {
+    position: relative;
+    width: min(100%, 20.5rem);
+    max-width: 100%;
+    height: 100%;
+    height: 100dvh;
+    min-height: 0;
+    background: linear-gradient(165deg, var(--surface-up) 0%, var(--surface) 45%, var(--bg) 100%);
+    border-left: 1px solid var(--border);
+    border-radius: 14px 0 0 14px;
+    box-shadow: -16px 0 48px rgba(0, 0, 0, .45);
+    display: flex;
+    flex-direction: column;
+    padding: max(0.75rem, env(safe-area-inset-top))
+      max(1rem, env(safe-area-inset-right))
+      max(1.25rem, env(safe-area-inset-bottom))
+      max(1rem, env(safe-area-inset-left));
+    transform: translateX(100%);
+    transition: transform .42s cubic-bezier(.32, .72, 0, 1);
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mobile-sheet.open .mobile-sheet-panel {
+    transform: translateX(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-sheet-panel,
+    .mobile-sheet-backdrop,
+    .nav-mobile-link {
+      transition-duration: 0.01ms !important;
+    }
+    .nav-mobile-item {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+
+  .mobile-sheet-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1rem;
+  }
+
+  .mobile-sheet-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .mobile-sheet-brand__row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.55rem;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .mobile-sheet-brand__mark-wrap {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+    background: var(--surface);
+    line-height: 0;
+  }
+
+  .mobile-sheet-brand__mark {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 28%;
+    opacity: 0.95;
+  }
+
+  .mobile-sheet-brand__name {
+    font-family: var(--font-hero-title);
+    font-size: 1.12rem;
+    font-weight: 700;
+    font-style: normal;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  .mobile-sheet-brand__sub {
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--accent);
+    line-height: 1.35;
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .mobile-sheet-close {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text);
+    transition: background var(--transition), border-color var(--transition), transform 0.2s;
+  }
+
+  .mobile-sheet-close:hover,
+  .mobile-sheet-close:focus-visible {
+    background: rgba(184, 149, 106, 0.12);
+    border-color: var(--accent);
+    outline: none;
+  }
+
+  .mobile-sheet-close:active {
+    transform: scale(0.96);
+  }
+
+  .mobile-sheet-close__icon {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+
+  .mobile-sheet-close__icon::before,
+  .mobile-sheet-close__icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    margin-top: -1px;
+    background: currentColor;
+    border-radius: 1px;
+  }
+
+  .mobile-sheet-close__icon::before {
+    transform: rotate(45deg);
+  }
+
+  .mobile-sheet-close__icon::after {
+    transform: rotate(-45deg);
+  }
+
+  .mobile-sheet-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.65rem;
+    padding-inline: 0.15rem;
+  }
+
+  .nav-mobile {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    margin-inline: -0.25rem;
+    padding-inline: 0.25rem;
+  }
+
+  .nav-mobile-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .nav-mobile-item {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+
+  .mobile-sheet:not(.open) .nav-mobile-item {
+    animation: none;
+  }
+
+  .mobile-sheet.open .nav-mobile-item {
+    animation: nav-item-in 0.45s cubic-bezier(.32, .72, 0, 1) forwards;
+    animation-delay: calc(0.06s + var(--nav-i, 0) * 0.055s);
+  }
+
+  @keyframes nav-item-in {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .nav-mobile-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 52px;
+    padding: 0.65rem 1rem;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    background: rgba(255, 255, 255, 0.02);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(184, 149, 106, 0.15);
+    transition:
+      background var(--transition),
+      border-color var(--transition),
+      color var(--transition),
+      transform 0.2s;
+  }
+
+  .nav-mobile-link:hover,
+  .nav-mobile-link:focus-visible {
+    background: rgba(184, 149, 106, 0.08);
+    border-color: rgba(184, 149, 106, 0.35);
+    color: var(--accent-light);
+    outline: none;
+  }
+
+  .nav-mobile-link:active {
+    transform: scale(0.985);
+  }
+
+  .nav-mobile-link--music {
+    color: rgba(212, 170, 125, 0.95);
+  }
+
+  .nav-mobile-link--music:hover,
+  .nav-mobile-link--music:focus-visible {
+    color: var(--accent-light);
+    background: rgba(184, 149, 106, 0.12);
+    border-color: rgba(184, 149, 106, 0.4);
+  }
+
+  .nav-mobile-link__text {
+    flex: 1;
+    text-align: left;
+  }
+
+  .nav-mobile-link__chev {
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    opacity: 0.45;
+    transform: rotate(-45deg);
+    flex-shrink: 0;
+    transition: opacity var(--transition), transform var(--transition);
+  }
+
+  .nav-mobile-link:hover .nav-mobile-link__chev,
+  .nav-mobile-link:focus-visible .nav-mobile-link__chev {
+    opacity: 0.85;
+    transform: rotate(-45deg) translate(2px, -2px);
+  }
+
+  @media (min-width: 768px) {
+    .nav-desktop { display: flex; }
+    .burger { display: none; }
+    .mobile-sheet { display: none; }
+  }
+</style>
+
+<script>
+  const header = document.getElementById('site-header');
+  const burger = header?.querySelector('.burger');
+  const sheet = document.getElementById('mobile-menu');
+  if (!header || !burger || !sheet) {
+    /* page sans header complet */
+  } else {
+
+  const closeEls = sheet.querySelectorAll('[data-mobile-close]');
+  const navLinks = sheet.querySelectorAll('a.nav-mobile-link');
+
+  function setMenuOpen(open) {
+    burger.setAttribute('aria-expanded', String(open));
+    burger.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
+    sheet.classList.toggle('open', open);
+    sheet.setAttribute('aria-hidden', String(!open));
+    document.body.style.overflow = open ? 'hidden' : '';
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+    if (open) {
+      document.addEventListener('keydown', onEscape);
+    } else {
+      document.removeEventListener('keydown', onEscape);
+    }
+  }
+
+  function onEscape(e) {
+    if (e.key === 'Escape') setMenuOpen(false);
+  }
+
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  burger.addEventListener('click', () => {
+    const open = burger.getAttribute('aria-expanded') === 'true';
+    setMenuOpen(!open);
+  });
+
+  closeEls.forEach((el) => {
+    el.addEventListener('click', () => setMenuOpen(false));
+  });
+
+  navLinks.forEach((a) => {
+    a.addEventListener('click', () => setMenuOpen(false));
+  });
+
+  const mqDesktop = window.matchMedia('(min-width: 768px)');
+  mqDesktop.addEventListener('change', (e) => {
+    if (e.matches) setMenuOpen(false);
+  });
+  }
+</script>

@@ -1,0 +1,265 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import site from '../data/site.json';
+
+const adresseComplete = `${site.adresse.rue}, ${site.adresse.codePostal} ${site.adresse.ville}, France`;
+const nomLegal = site.juridique?.denomination ?? site.nom;
+---
+
+<Layout
+  title="Politique de confidentialité"
+  description={`Politique de confidentialité de ${site.marque} — collecte, finalités, durée de conservation et droits RGPD des utilisateurs.`}
+  noindex={true}
+>
+  <section class="page-header">
+    <div class="container">
+      <Breadcrumb crumbs={[{ label: 'Politique de confidentialité' }]} />
+      <p class="overline reveal">RGPD — Données personnelles</p>
+      <h1 class="reveal">Politique de confidentialité</h1>
+      <p class="page-intro text-dim reveal">
+        La présente politique précise la manière dont vos données personnelles
+        sont collectées, traitées et protégées dans le cadre de l'activité
+        d'artisan menuisier-charpentier-ébéniste de {nomLegal}.
+      </p>
+    </div>
+  </section>
+
+  <section class="section legal-body">
+    <div class="container legal-content">
+      <article class="reveal">
+        <h2>Collecte des données personnelles</h2>
+        <p>
+          Dans le cadre de mon activité d'artisan menuisier-charpentier-ébéniste,
+          je suis amené à collecter certaines données vous concernant lorsque
+          vous :
+        </p>
+        <ul class="legal-bullets">
+          <li>utilisez le formulaire de contact (si actif),</li>
+          <li>m'envoyez un email ou me contactez par téléphone.</li>
+        </ul>
+        <p>
+          Les données susceptibles d'être collectées sont : nom, prénom, adresse
+          email, numéro de téléphone, adresse postale, et toute information que
+          vous me communiquez pour la réalisation d'un devis ou d'un projet.
+        </p>
+      </article>
+
+      <article class="reveal">
+        <h2>Finalités du traitement</h2>
+        <p>Vos données sont utilisées pour :</p>
+        <ul class="legal-bullets">
+          <li>répondre à vos demandes de devis ou d'informations,</li>
+          <li>gérer la relation client (devis, factures, suivi de chantier),</li>
+          <li>respecter mes obligations légales et comptables.</li>
+        </ul>
+      </article>
+
+      <article class="reveal">
+        <h2>Base légale</h2>
+        <p>
+          Le traitement repose sur votre consentement (pour le contact) ou sur
+          l'exécution de mesures précontractuelles (établissement d'un devis).
+        </p>
+      </article>
+
+      <article class="reveal">
+        <h2>Destinataires des données</h2>
+        <p>
+          Seul {nomLegal}, en tant que responsable de traitement, a accès à vos
+          données. Elles ne sont jamais vendues ni louées. Elles peuvent être
+          transmises à mes sous-traitants techniques (hébergement du site par
+          OVH SAS / OVHcloud, logiciel de facturation) dans le strict besoin de l'exécution du
+          service.
+        </p>
+      </article>
+
+      <article class="reveal">
+        <h2>Durée de conservation</h2>
+        <ul class="legal-bullets">
+          <li><strong>Données issues d'un contact simple :</strong> 3 ans après le dernier contact.</li>
+          <li><strong>Données clients (devis, factures) :</strong> 10 ans (obligation comptable).</li>
+          <li><strong>Données d'un prospect non converti :</strong> 3 ans.</li>
+        </ul>
+      </article>
+
+      <article class="reveal">
+        <h2>Vos droits (RGPD)</h2>
+        <p>
+          Conformément au Règlement Général sur la Protection des Données
+          (RGPD) et à la loi Informatique et Libertés, vous disposez des droits
+          suivants :
+        </p>
+        <ul class="legal-bullets">
+          <li>droit d'accès à vos données,</li>
+          <li>droit de rectification,</li>
+          <li>droit à l'effacement (dans la limite des obligations légales),</li>
+          <li>droit à la limitation du traitement,</li>
+          <li>droit d'opposition,</li>
+          <li>droit à la portabilité.</li>
+        </ul>
+        <p>
+          Pour exercer ces droits, contactez-moi par email à
+          {site.email && (
+            <>
+              {' '}
+              <a href={`mailto:${site.email}`}>{site.email}</a>
+            </>
+          )}
+          {' '}ou par courrier à l'adresse indiquée dans les
+          <a href="/mentions-legales/"> mentions légales</a> ({adresseComplete}).
+          Je m'engage à vous répondre dans un délai maximum d'un mois.
+        </p>
+      </article>
+
+      <article class="reveal">
+        <h2>Droit de réclamation</h2>
+        <p>
+          Si vous estimez que vos droits ne sont pas respectés, vous pouvez
+          déposer une réclamation auprès de la CNIL :
+          {' '}
+          <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer">
+            www.cnil.fr
+          </a>.
+        </p>
+      </article>
+
+      <article class="reveal">
+        <h2>Cookies</h2>
+        <p>
+          Ce site n'utilise pas de cookies de traçage publicitaire. Il peut
+          utiliser des cookies techniques strictement nécessaires à son
+          fonctionnement (par exemple, la mémorisation du consentement). Aucun
+          consentement n'est requis pour ces cookies, conformément à la
+          recommandation de la CNIL.
+        </p>
+      </article>
+
+      <article class="reveal">
+        <h2>Modifications</h2>
+        <p>
+          Cette politique peut évoluer pour s'adapter aux évolutions légales et
+          réglementaires. La date de la dernière mise à jour est indiquée
+          ci-dessous.
+        </p>
+      </article>
+
+      <p class="legal-update reveal">Dernière mise à jour : avril 2026.</p>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .page-header {
+    padding-top: calc(var(--header-height) + var(--space-xl));
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-header h1 {
+    margin-block: .5rem var(--space-sm);
+  }
+
+  .page-intro {
+    font-size: 1.05rem;
+    max-width: 65ch;
+  }
+
+  @media (max-width: 1023px) {
+    .page-header {
+      padding-top: calc(var(--header-height) + var(--space-md) + env(safe-area-inset-top, 0px));
+      padding-bottom: var(--space-sm);
+    }
+
+    .page-header h1 {
+      margin-top: .35rem;
+      font-size: clamp(1.4rem, 4vw + 0.5rem, 2rem);
+      line-height: 1.2;
+    }
+  }
+
+  .legal-body {
+    padding-block: var(--space-xl);
+  }
+
+  .legal-content {
+    max-width: 75ch;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .legal-content article {
+    display: flex;
+    flex-direction: column;
+    gap: .85rem;
+  }
+
+  .legal-content h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1vw + 1rem, 1.6rem);
+    font-weight: 400;
+    letter-spacing: .02em;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: .5rem;
+  }
+
+  .legal-content p {
+    color: var(--text-dim);
+    line-height: 1.75;
+    font-size: .95rem;
+  }
+
+  .legal-bullets {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
+
+  .legal-bullets li {
+    position: relative;
+    padding-left: 1.2rem;
+    color: var(--text-dim);
+    font-size: .95rem;
+    line-height: 1.6;
+  }
+
+  .legal-bullets li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: .65rem;
+    width: 5px;
+    height: 5px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  .legal-bullets li strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .legal-content a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--accent);
+  }
+
+  .legal-content a:hover {
+    color: var(--accent);
+  }
+
+  .legal-update {
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border);
+    font-size: .85rem !important;
+    font-style: italic;
+    opacity: .75;
+  }
+</style>

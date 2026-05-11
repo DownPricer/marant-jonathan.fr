@@ -1,0 +1,285 @@
+---
+/**
+ * Morceau d’ambiance : `src/music/titan-de-lartisanat.mp3` (copie de « Titan de l'artisanat »).
+ */
+const trackMods = import.meta.glob('../music/titan-de-lartisanat.mp3', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+});
+const trackUrl = (Object.values(trackMods)[0] as string | undefined) ?? '';
+const hasTrack = Boolean(trackUrl);
+---
+
+{
+  hasTrack && (
+    <section
+      id="ambient-music"
+      class="ambient"
+      data-ambient-player
+      aria-label="Lecture musicale d’ambiance"
+      title="Son modéré — pensez aux voisins."
+    >
+      <audio
+        id="ambient-audio"
+        class="ambient__audio"
+        src={trackUrl}
+        preload="metadata"
+        loop
+      />
+
+      <div class="container ambient__inner">
+        <p class="ambient__intro">
+          <strong>Pour capter l&rsquo;état d&rsquo;esprit de Jonathan, une chanson suffit.</strong>
+          Ce morceau, c&rsquo;est son invitation à entrer dans son univers artisan&nbsp;: appuyez sur lecture.
+        </p>
+        <div class="ambient__row">
+          <button
+            type="button"
+            class="ambient__play"
+            aria-label="Lecture / pause"
+            data-ambient-play
+          >
+            <span class="ambient__ico ambient__ico--play" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+            </span>
+            <span class="ambient__ico ambient__ico--pause" hidden aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6 5h4v14H6V5zm8 0h4v14h-4V5z" /></svg>
+            </span>
+          </button>
+
+          <div class="ambient__meta">
+            <span class="ambient__k">Écouter</span>
+            <span class="ambient__t">Titan de l&rsquo;artisanat</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ambient__track-outer" aria-hidden="true">
+        <div class="ambient__track">
+          <div class="ambient__fill" data-ambient-fill></div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .ambient {
+    position: relative;
+    z-index: 0;
+    width: 100%;
+    margin-top: var(--space-xl);
+    scroll-margin-top: calc(var(--header-height) + 1rem);
+    font-family: var(--font-body);
+    border-top: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--surface-up) 0%, var(--surface) 55%, var(--bg) 100%);
+  }
+
+  .ambient__inner {
+    padding-block: var(--space-md) 0.85rem;
+  }
+
+  .ambient__intro {
+    margin: 0 0 1rem;
+    max-width: 34rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-dim);
+  }
+
+  .ambient__intro strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-weight: 500;
+    font-size: 1.02rem;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  .ambient__row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 42rem;
+  }
+
+  @media (max-width: 767px) {
+    .ambient {
+      margin-top: var(--space-lg);
+    }
+
+    .ambient__inner {
+      padding-block: var(--space-sm) 0.75rem;
+    }
+
+    .ambient__row {
+      max-width: none;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .ambient__row {
+      margin-inline: 0;
+    }
+  }
+
+  .ambient__play {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(184, 149, 106, 0.35);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--accent-light);
+    cursor: pointer;
+    transition:
+      transform 0.2s ease,
+      border-color 0.25s ease,
+      color 0.25s ease,
+      background 0.25s ease;
+  }
+
+  .ambient__play:hover,
+  .ambient__play:focus-visible {
+    border-color: rgba(184, 149, 106, 0.55);
+    color: var(--text);
+    background: rgba(184, 149, 106, 0.1);
+    outline: none;
+  }
+
+  .ambient__play:active {
+    transform: scale(0.97);
+  }
+
+  .ambient__ico--pause[hidden],
+  .ambient__ico--play[hidden] {
+    display: none;
+  }
+
+  .ambient__meta {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.12rem;
+  }
+
+  .ambient__k {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .ambient__t {
+    font-family: var(--font-hero-title);
+    font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ambient__track-outer {
+    margin-top: 0.65rem;
+    padding-inline: 0;
+  }
+
+  .ambient__track {
+    height: 2px;
+    background: rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+  }
+
+  .ambient__fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-light));
+    opacity: 0.85;
+    transition: width 0.1s linear;
+  }
+
+  .ambient__audio {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ambient__fill {
+      transition: none;
+    }
+  }
+</style>
+
+{
+  hasTrack && (
+    <script>
+      (function () {
+        const root = document.querySelector('[data-ambient-player]');
+        const audio = document.getElementById('ambient-audio');
+        if (!root || !audio || !(audio instanceof HTMLAudioElement)) return;
+
+        const playBtn = root.querySelector('[data-ambient-play]');
+        const iconPlay = root.querySelector('.ambient__ico--play');
+        const iconPause = root.querySelector('.ambient__ico--pause');
+        const fill = root.querySelector('[data-ambient-fill]');
+
+        audio.volume = 0.34;
+
+        function setPlaying(playing) {
+          if (!iconPlay || !iconPause) return;
+          iconPlay.toggleAttribute('hidden', playing);
+          iconPause.toggleAttribute('hidden', !playing);
+          playBtn?.setAttribute('aria-label', playing ? 'Pause' : 'Lecture');
+        }
+
+        playBtn?.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          try {
+            if (audio.paused) await audio.play();
+            else audio.pause();
+          } catch {
+            /* navigateur */
+          }
+        });
+
+        audio.addEventListener('play', () => setPlaying(true));
+        audio.addEventListener('pause', () => setPlaying(false));
+        audio.addEventListener('timeupdate', () => {
+          if (!fill || !audio.duration || !Number.isFinite(audio.duration)) return;
+          fill.style.width = (audio.currentTime / audio.duration) * 100 + '%';
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && !audio.paused) audio.pause();
+        });
+
+        function tryPlayFromHash() {
+          if (window.location.hash !== '#ambient-music') return;
+          window.setTimeout(() => {
+            try {
+              void audio.play();
+            } catch {
+              /* */
+            }
+          }, 280);
+        }
+
+        tryPlayFromHash();
+        window.addEventListener('hashchange', tryPlayFromHash);
+      })();
+    </script>
+  )
+}

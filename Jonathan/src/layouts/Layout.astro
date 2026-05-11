@@ -2,11 +2,22 @@
 import '../styles/global.css';
 import site from '../data/site.json';
 import { withBase } from '../utils/base';
+import { telHref as telHrefFr } from '../utils/phone';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import FloatingContact from '../components/FloatingContact.astro';
 import MusicPlayer from '../components/MusicPlayer.astro';
 import IntroSplash from '../components/IntroSplash.astro';
+
+type Juridique = {
+  denomination: string;
+  forme?: string;
+  siren: string;
+  siret: string;
+  codeNaf?: string;
+  libelleNaf?: string;
+  tvaIntracommunautaire: string;
+};
 
 interface Props {
   /** Titre court (suffixé par la marque) ou ignoré si `fullTitle` est défini */
@@ -16,11 +27,23 @@ interface Props {
   description?: string;
   /** Chemin image OG (ex. `/images/logo-mj.png`) ou URL absolue */
   image?: string;
+  /** Texte alternatif pour le partage social (og:image / Twitter) */
+  ogImageAlt?: string;
   ogType?: 'website' | 'article';
+  /** Sous-section pour `og:type=article` (Facebook / LinkedIn) */
+  articleSection?: string;
   /** Ne pas indexer (brouillon, page technique) */
   noindex?: boolean;
   /** Surcharge la balise meta keywords (sinon : `site.motsCles` depuis site.json) */
   keywords?: string;
+  /** Schémas JSON-LD supplémentaires (Article, BreadcrumbList, etc.) */
+  extraJsonLd?: Record<string, unknown>[];
+  /** Préchargement image LCP (URL complète, ex. `new URL(withBase('…'), Astro.site).href`) */
+  preloadImageHref?: string;
+  /** Auteur pour `article:author` (pages `og:type=article`) */
+  articleAuthor?: string;
+  /** Date ISO pour `article:published_time` (optionnel) */
+  articlePublishedTime?: string;
   /** Intro plein écran au chargement (ex. accueil uniquement) */
   introSplash?: boolean;
 }
@@ -30,9 +53,15 @@ const {
   fullTitle,
   description = 'Marant Jonathan — menuiserie, ébénisterie, charpente, zinguerie et couverture à Saint-Ambroix (30). Particuliers et professionnels, neuf et rénovation.',
   image: imageProp,
+  ogImageAlt,
   ogType = 'website',
+  articleSection,
   noindex = false,
   keywords: keywordsProp,
+  extraJsonLd = [],
+  preloadImageHref,
+  articleAuthor,
+  articlePublishedTime,
   introSplash = false,
 } = Astro.props;
 
@@ -55,6 +84,12 @@ const ogImageUrl = ogImagePath.startsWith('http')
   ? ogImagePath
   : new URL(ogImagePath.replace(/^\//, ''), Astro.site!).href;
 
+const ogImageAltFinal = (ogImageAlt ?? '').trim() || pageTitle;
+
+const juridique = (site as typeof site & { juridique?: Juridique }).juridique;
+const sirenDigits = juridique?.siren.replace(/\s/g, '') ?? '';
+const siretDigits = juridique?.siret.replace(/\s/g, '') ?? '';
+
 /** Lecteur musique (au-dessus du footer) : uniquement l’accueil (chemins avec ou sans `base`) */
 const pathNorm = (Astro.url.pathname || '/').replace(/\/$/, '') || '/';
 const baseRaw = import.meta.env.BASE_URL || '/';
@@ -66,16 +101,64 @@ const showMusicPlayer =
 
 const sameAs = [site.googleAvisUrl, site.pagesJaunesUrl].filter(Boolean);
 const logoAbsUrl = new URL(withBase('/images/logo-mj.png').replace(/^\//, ''), Astro.site!).href;
+const telephoneSchema = site.telephone?.trim() ? telHrefFr(site.telephone) : '';
+
+const siteHref = Astro.site!.href;
+const contactPageUrl = new URL(withBase('/contact').replace(/^\//, ''), Astro.site!).href;
+const realisationsPageUrl = new URL(withBase('/realisations').replace(/^\//, ''), Astro.site!).href;
+
+const alternateNames = [site.nom, site.nomListing, juridique?.denomination].filter(
+  (x): x is string => Boolean(x && String(x).trim())
+);
+const alternateNameUnique = [...new Set(alternateNames)];
 
 const jsonLdBusiness = {
   '@context': 'https://schema.org',
   '@type': 'HomeAndConstructionBusiness',
-  '@id': `${Astro.site!.href}#business`,
+  '@id': `${siteHref}#business`,
   name: site.marque,
-  alternateName: [site.nom, site.nomListing],
+  alternateName: alternateNameUnique.length ? alternateNameUnique : undefined,
+  ...(juridique
+    ? {
+        legalName: juridique.denomination,
+        vatID: juridique.tvaIntracommunautaire,
+        taxID: sirenDigits || undefined,
+        identifier: siretDigits
+          ? [
+              { '@type': 'PropertyValue', propertyID: 'SIRET', value: siretDigits },
+              { '@type': 'PropertyValue', propertyID: 'SIREN', value: sirenDigits },
+            ]
+          : undefined,
+      }
+    : {}),
   description: site.baseline,
-  url: Astro.site!.href,
-  telephone: site.telephone,
+  url: siteHref,
+  founder: { '@id': `${siteHref}#person` },
+  slogan: site.baseline,
+  /** Fourchette indicative (schema.org / Google) */
+  priceRange: '\u20AC\u20AC',
+  numberOfEmployees: { '@type': 'QuantitativeValue', value: 1 },
+  ...(site.googleAvisUrl ? { hasMap: site.googleAvisUrl } : {}),
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      contactType: 'customer support',
+      ...(telephoneSchema ? { telephone: telephoneSchema } : {}),
+      ...(site.email?.trim() ? { email: site.email } : {}),
+      areaServed: 'FR',
+      availableLanguage: ['French'],
+    },
+  ],
+  serviceArea: {
+    '@type': 'GeoCircle',
+    geoMidpoint: {
+      '@type': 'GeoCoordinates',
+      latitude: 44.2584,
+      longitude: 4.1978,
+    },
+    geoRadius: 50000,
+  },
+  ...(telephoneSchema ? { telephone: telephoneSchema } : {}),
   email: site.email,
   logo: logoAbsUrl,
   image: logoAbsUrl,
@@ -133,9 +216,57 @@ const jsonLdBusiness = {
 const jsonLdWebSite = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
+  '@id': `${siteHref}#website`,
   name: site.marque,
-  url: Astro.site!.href,
+  url: siteHref,
+  inLanguage: 'fr-FR',
+  publisher: { '@id': `${siteHref}#business` },
+  potentialAction: [
+    {
+      '@type': 'ViewAction',
+      name: 'Portfolio — réalisations',
+      target: realisationsPageUrl,
+    },
+    {
+      '@type': 'CommunicateAction',
+      name: 'Contact et demande de devis',
+      target: contactPageUrl,
+    },
+  ],
 };
+
+const authorForArticle = (articleAuthor ?? '').trim() || juridique?.denomination || site.nom;
+
+const jsonLdPerson = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': `${siteHref}#person`,
+  name: juridique?.denomination ?? site.nom,
+  jobTitle: site.titre,
+  url: siteHref,
+  ...(motsClesSite.length ? { knowsAbout: motsClesSite } : {}),
+  ...(sameAs.length ? { sameAs } : {}),
+  worksFor: { '@id': `${siteHref}#business` },
+};
+
+const jsonLdWebPage = !noindex
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      '@id': `${canonicalURL.href}#webpage`,
+      url: canonicalURL.href,
+      name: pageTitle,
+      description,
+      isPartOf: { '@id': `${siteHref}#website` },
+      about: { '@id': `${siteHref}#business` },
+      inLanguage: 'fr-FR',
+      primaryImageOfPage: {
+        '@type': 'ImageObject',
+        url: ogImageUrl,
+        caption: ogImageAltFinal,
+      },
+    }
+  : null;
 ---
 
 <!doctype html>
@@ -145,15 +276,26 @@ const jsonLdWebSite = {
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content={description} />
   {keywordsMeta && <meta name="keywords" content={keywordsMeta} />}
-  {noindex && <meta name="robots" content="noindex, nofollow" />}
+  {noindex ? (
+    <meta name="robots" content="noindex, nofollow" />
+  ) : (
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+  )}
   <meta name="geo.region" content="FR-30" />
   <meta name="geo.placename" content="Saint-Ambroix" />
   <meta name="geo.position" content="44.2584;4.1978" />
   <meta name="ICBM" content="44.2584, 4.1978" />
   <meta name="theme-color" content="#0a0a0a" />
-  <meta name="author" content={site.nom} />
+  <meta name="author" content={juridique?.denomination ?? site.nom} />
+  <meta name="publisher" content={site.marque} />
   <link rel="canonical" href={canonicalURL.href} />
+  <link rel="alternate" hreflang="fr" href={canonicalURL.href} />
+  <link rel="alternate" hreflang="x-default" href={canonicalURL.href} />
   <title>{pageTitle}</title>
+  {preloadImageHref?.trim() && (
+    <link rel="preload" as="image" href={preloadImageHref.trim()} fetchpriority="high" />
+  )}
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
 
   <meta property="og:type" content={ogType} />
   <meta property="og:locale" content="fr_FR" />
@@ -162,13 +304,29 @@ const jsonLdWebSite = {
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonicalURL.href} />
   <meta property="og:image" content={ogImageUrl} />
+  <meta property="og:image:alt" content={ogImageAltFinal} />
+  {ogType === 'article' && articleSection?.trim() && (
+    <meta property="article:section" content={articleSection.trim()} />
+  )}
+  {ogType === 'article' && authorForArticle && (
+    <meta property="article:author" content={authorForArticle} />
+  )}
+  {ogType === 'article' && articlePublishedTime?.trim() && (
+    <meta property="article:published_time" content={articlePublishedTime.trim()} />
+  )}
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={pageTitle} />
   <meta name="twitter:description" content={description} />
   <meta name="twitter:image" content={ogImageUrl} />
+  <meta name="twitter:image:alt" content={ogImageAltFinal} />
 
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdBusiness)} />
   <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebSite)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdPerson)} />
+  {jsonLdWebPage && <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebPage)} />}
+  {extraJsonLd.map((chunk) => (
+    <script type="application/ld+json" set:html={JSON.stringify(chunk)} />
+  ))}
 
   <link rel="icon" href={withBase('/images/logo-mj.png')} type="image/png" sizes="any" />
   <link rel="apple-touch-icon" href={withBase('/images/logo-mj.png')} />

@@ -1,0 +1,359 @@
+---
+import '../styles/global.css';
+import site from '../data/site.json';
+import { withBase } from '../utils/base';
+import { telHref as telHrefFr } from '../utils/phone';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FloatingContact from '../components/FloatingContact.astro';
+import MusicPlayer from '../components/MusicPlayer.astro';
+import IntroSplash from '../components/IntroSplash.astro';
+
+type Juridique = {
+  denomination: string;
+  siren: string;
+  siret: string;
+  tvaIntracommunautaire: string;
+};
+
+interface Props {
+  /** Titre court (suffixé par la marque) ou ignoré si `fullTitle` est défini */
+  title: string;
+  /** Balise `<title>` complète (sans suffixe automatique) — recommandé pour l’accueil */
+  fullTitle?: string;
+  description?: string;
+  /** Chemin image OG (ex. `/images/logo-mj.png`) ou URL absolue */
+  image?: string;
+  /** Texte alternatif pour le partage social (og:image / Twitter) */
+  ogImageAlt?: string;
+  ogType?: 'website' | 'article';
+  /** Sous-section pour `og:type=article` (Facebook / LinkedIn) */
+  articleSection?: string;
+  /** Ne pas indexer (brouillon, page technique) */
+  noindex?: boolean;
+  /** Surcharge la balise meta keywords (sinon : `site.motsCles` depuis site.json) */
+  keywords?: string;
+  /** Schémas JSON-LD supplémentaires (Article, BreadcrumbList, etc.) */
+  extraJsonLd?: Record<string, unknown>[];
+  /** Préchargement image LCP (URL complète, ex. `new URL(withBase('…'), Astro.site).href`) */
+  preloadImageHref?: string;
+  /** Auteur pour `article:author` (pages `og:type=article`) */
+  articleAuthor?: string;
+  /** Date ISO pour `article:published_time` (optionnel) */
+  articlePublishedTime?: string;
+  /** Intro plein écran au chargement (ex. accueil uniquement) */
+  introSplash?: boolean;
+}
+
+const {
+  title,
+  fullTitle,
+  description = 'Marant Jonathan — menuiserie, ébénisterie, charpente, zinguerie et couverture à Saint-Ambroix (30). Particuliers et professionnels, neuf et rénovation.',
+  image: imageProp,
+  ogImageAlt,
+  ogType = 'website',
+  articleSection,
+  noindex = false,
+  keywords: keywordsProp,
+  extraJsonLd = [],
+  preloadImageHref,
+  articleAuthor,
+  articlePublishedTime,
+  introSplash = false,
+} = Astro.props;
+
+const motsClesSite = (site as typeof site & { motsCles?: string[] }).motsCles ?? [];
+const keywordsMeta =
+  keywordsProp?.trim() ||
+  (motsClesSite.length ? motsClesSite.join(', ') : '');
+
+const pageTitle = fullTitle ?? `${title} — ${site.marque}`;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site!);
+const defaultOgPath = withBase('/images/logo-mj.png');
+const ogImagePath = imageProp?.startsWith('http')
+  ? imageProp
+  : imageProp
+    ? imageProp.startsWith('/')
+      ? withBase(imageProp)
+      : withBase(`/${imageProp}`)
+    : defaultOgPath;
+const ogImageUrl = ogImagePath.startsWith('http')
+  ? ogImagePath
+  : new URL(ogImagePath.replace(/^\//, ''), Astro.site!).href;
+
+const ogImageAltFinal = (ogImageAlt ?? '').trim() || pageTitle;
+
+const juridique = (site as typeof site & { juridique?: Juridique }).juridique;
+const sirenDigits = juridique?.siren.replace(/\s/g, '') ?? '';
+const siretDigits = juridique?.siret.replace(/\s/g, '') ?? '';
+
+/** Lecteur musique (au-dessus du footer) : uniquement l’accueil (chemins avec ou sans `base`) */
+const pathNorm = (Astro.url.pathname || '/').replace(/\/$/, '') || '/';
+const baseRaw = import.meta.env.BASE_URL || '/';
+const baseTrim = baseRaw === '/' ? '' : baseRaw.replace(/\/$/, '');
+const showMusicPlayer =
+  pathNorm === '/' ||
+  pathNorm === '/index.html' ||
+  (Boolean(baseTrim) && (pathNorm === baseTrim || pathNorm === `${baseTrim}/index.html`));
+
+const sameAs = [site.googleAvisUrl, site.pagesJaunesUrl].filter(Boolean);
+const logoAbsUrl = new URL(withBase('/images/logo-mj.png').replace(/^\//, ''), Astro.site!).href;
+const telephoneSchema = site.telephone?.trim() ? telHrefFr(site.telephone) : '';
+
+const siteHref = Astro.site!.href;
+const contactPageUrl = new URL(withBase('/contact').replace(/^\//, ''), Astro.site!).href;
+const realisationsPageUrl = new URL(withBase('/realisations').replace(/^\//, ''), Astro.site!).href;
+
+const alternateNames = [site.nom, site.nomListing, juridique?.denomination].filter(
+  (x): x is string => Boolean(x && String(x).trim())
+);
+const alternateNameUnique = [...new Set(alternateNames)];
+
+const jsonLdBusiness = {
+  '@context': 'https://schema.org',
+  '@type': 'HomeAndConstructionBusiness',
+  '@id': `${siteHref}#business`,
+  name: site.marque,
+  alternateName: alternateNameUnique.length ? alternateNameUnique : undefined,
+  ...(juridique
+    ? {
+        legalName: juridique.denomination,
+        vatID: juridique.tvaIntracommunautaire,
+        taxID: sirenDigits || undefined,
+        identifier: siretDigits
+          ? [
+              { '@type': 'PropertyValue', propertyID: 'SIRET', value: siretDigits },
+              { '@type': 'PropertyValue', propertyID: 'SIREN', value: sirenDigits },
+            ]
+          : undefined,
+      }
+    : {}),
+  description: site.baseline,
+  url: siteHref,
+  founder: { '@id': `${siteHref}#person` },
+  slogan: site.baseline,
+  /** Fourchette indicative (schema.org / Google) */
+  priceRange: '\u20AC\u20AC',
+  numberOfEmployees: { '@type': 'QuantitativeValue', value: 1 },
+  ...(site.googleAvisUrl ? { hasMap: site.googleAvisUrl } : {}),
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      contactType: 'customer support',
+      ...(telephoneSchema ? { telephone: telephoneSchema } : {}),
+      ...(site.email?.trim() ? { email: site.email } : {}),
+      areaServed: 'FR',
+      availableLanguage: ['French'],
+    },
+  ],
+  serviceArea: {
+    '@type': 'GeoCircle',
+    geoMidpoint: {
+      '@type': 'GeoCoordinates',
+      latitude: 44.2584,
+      longitude: 4.1978,
+    },
+    geoRadius: 50000,
+  },
+  ...(telephoneSchema ? { telephone: telephoneSchema } : {}),
+  email: site.email,
+  logo: logoAbsUrl,
+  image: logoAbsUrl,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.adresse.rue,
+    postalCode: site.adresse.codePostal,
+    addressLocality: site.adresse.ville,
+    addressRegion: 'Occitanie',
+    addressCountry: 'FR',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 44.2584,
+    longitude: 4.1978,
+  },
+  areaServed: [
+    { '@type': 'City', name: 'Saint-Ambroix' },
+    { '@type': 'AdministrativeArea', name: 'Gard' },
+    { '@type': 'AdministrativeArea', name: 'Cévennes' },
+  ],
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: '08:00',
+      closes: '19:00',
+    },
+  ],
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Prestations',
+    itemListElement: site.prestations.map((p: string) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: p },
+    })),
+  },
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '5',
+    reviewCount: String(site.avis.length),
+    bestRating: '5',
+    worstRating: '1',
+  },
+  review: site.avis.map((a: { texte: string; auteur: string }) => ({
+    '@type': 'Review',
+    reviewBody: a.texte,
+    author: { '@type': 'Person', name: a.auteur },
+    reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+  })),
+  ...(motsClesSite.length ? { knowsAbout: motsClesSite } : {}),
+  ...(sameAs.length ? { sameAs } : {}),
+};
+
+const jsonLdWebSite = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${siteHref}#website`,
+  name: site.marque,
+  url: siteHref,
+  inLanguage: 'fr-FR',
+  publisher: { '@id': `${siteHref}#business` },
+  potentialAction: [
+    {
+      '@type': 'ViewAction',
+      name: 'Portfolio — réalisations',
+      target: realisationsPageUrl,
+    },
+    {
+      '@type': 'CommunicateAction',
+      name: 'Contact et demande de devis',
+      target: contactPageUrl,
+    },
+  ],
+};
+
+const authorForArticle = (articleAuthor ?? '').trim() || juridique?.denomination || site.nom;
+
+const jsonLdPerson = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': `${siteHref}#person`,
+  name: juridique?.denomination ?? site.nom,
+  jobTitle: site.titre,
+  url: siteHref,
+  ...(motsClesSite.length ? { knowsAbout: motsClesSite } : {}),
+  ...(sameAs.length ? { sameAs } : {}),
+  worksFor: { '@id': `${siteHref}#business` },
+};
+
+const jsonLdWebPage = !noindex
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      '@id': `${canonicalURL.href}#webpage`,
+      url: canonicalURL.href,
+      name: pageTitle,
+      description,
+      isPartOf: { '@id': `${siteHref}#website` },
+      about: { '@id': `${siteHref}#business` },
+      inLanguage: 'fr-FR',
+      primaryImageOfPage: {
+        '@type': 'ImageObject',
+        url: ogImageUrl,
+        caption: ogImageAltFinal,
+      },
+    }
+  : null;
+---
+
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content={description} />
+  {keywordsMeta && <meta name="keywords" content={keywordsMeta} />}
+  {noindex ? (
+    <meta name="robots" content="noindex, nofollow" />
+  ) : (
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+  )}
+  <meta name="geo.region" content="FR-30" />
+  <meta name="geo.placename" content="Saint-Ambroix" />
+  <meta name="geo.position" content="44.2584;4.1978" />
+  <meta name="ICBM" content="44.2584, 4.1978" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="author" content={juridique?.denomination ?? site.nom} />
+  <meta name="publisher" content={site.marque} />
+  <link rel="canonical" href={canonicalURL.href} />
+  <link rel="alternate" hreflang="fr" href={canonicalURL.href} />
+  <link rel="alternate" hreflang="x-default" href={canonicalURL.href} />
+  <title>{pageTitle}</title>
+  {preloadImageHref?.trim() && (
+    <link rel="preload" as="image" href={preloadImageHref.trim()} fetchpriority="high" />
+  )}
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+
+  <meta property="og:type" content={ogType} />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:site_name" content={site.marque} />
+  <meta property="og:title" content={pageTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonicalURL.href} />
+  <meta property="og:image" content={ogImageUrl} />
+  <meta property="og:image:alt" content={ogImageAltFinal} />
+  {ogType === 'article' && articleSection?.trim() && (
+    <meta property="article:section" content={articleSection.trim()} />
+  )}
+  {ogType === 'article' && authorForArticle && (
+    <meta property="article:author" content={authorForArticle} />
+  )}
+  {ogType === 'article' && articlePublishedTime?.trim() && (
+    <meta property="article:published_time" content={articlePublishedTime.trim()} />
+  )}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={pageTitle} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImageUrl} />
+  <meta name="twitter:image:alt" content={ogImageAltFinal} />
+
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdBusiness)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebSite)} />
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLdPerson)} />
+  {jsonLdWebPage && <script type="application/ld+json" set:html={JSON.stringify(jsonLdWebPage)} />}
+  {extraJsonLd.map((chunk) => (
+    <script type="application/ld+json" set:html={JSON.stringify(chunk)} />
+  ))}
+
+  <link rel="icon" href={withBase('/images/logo-mj.png')} type="image/png" sizes="any" />
+  <link rel="apple-touch-icon" href={withBase('/images/logo-mj.png')} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Inter:wght@300;400;500;600&family=Oswald:wght@600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body class:list={[{ 'has-floating-contact': Boolean(site.telephone?.trim()) }]}>
+  <Header />
+  {introSplash && <IntroSplash />}
+  <main>
+    <slot />
+    {showMusicPlayer && <MusicPlayer />}
+  </main>
+  <Footer musicBandAbove={showMusicPlayer} />
+  <FloatingContact />
+
+  <script>
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            observer.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+  </script>
+</body>
+</html>

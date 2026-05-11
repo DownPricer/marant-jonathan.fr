@@ -1,0 +1,303 @@
+---
+import site from '../data/site.json';
+import { withBase } from '../utils/base';
+import menuiserieCover from '../categories/menuiserie-savoir-faire.webp';
+import charpenteCover from '../categories/charpentier.webp';
+import ebenisteCover from '../categories/ebeniste.webp';
+import couvreurCover from '../categories/couvreur.webp';
+import zinguerieCover from '../categories/zinguerie.webp';
+
+function toUrl(mod: string | { src: string }): string {
+  return typeof mod === 'string' ? mod : mod.src;
+}
+
+/** Photos d’illustration par métier (dossier `src/categories/`). */
+const photoParMetier: Record<string, string> = {
+  menuiserie: toUrl(menuiserieCover),
+  charpente: toUrl(charpenteCover),
+  ebenisterie: toUrl(ebenisteCover),
+  couverture: toUrl(couvreurCover),
+  zinguerie: toUrl(zinguerieCover),
+};
+
+/** Mots-clés SEO complémentaires pour chaque métier (attribut `data-keywords`). */
+const seoParMetier: Record<string, string> = {
+  menuiserie: 'menuisier Saint-Ambroix, menuiserie sur mesure Gard, menuiserie bois Cévennes',
+  charpente: 'charpentier Saint-Ambroix, charpente bois Gard, ossature bois Cévennes',
+  ebenisterie: 'ébéniste Gard, ébénisterie sur mesure, mobilier bois sur mesure Saint-Ambroix',
+  couverture: 'couvreur Saint-Ambroix, couverture toiture Gard, rénovation toiture Cévennes',
+  zinguerie: 'zingueur Gard, zinguerie gouttières chéneaux, étanchéité toiture Saint-Ambroix',
+};
+---
+
+<section class="section metiers" id="metiers" aria-labelledby="metiers-title">
+  <div class="container">
+    <p class="overline reveal">Savoir-faire</p>
+    <h2 id="metiers-title" class="reveal metiers-title">
+      <span class="metiers-title-word">Menuisier</span>
+      <span class="metiers-title-sep" aria-hidden="true">·</span>
+      <span class="metiers-title-word">Charpentier</span>
+      <span class="metiers-title-sep" aria-hidden="true">·</span>
+      <span class="metiers-title-word">Ébéniste</span>
+      <span class="metiers-title-sep" aria-hidden="true">·</span>
+      <span class="metiers-title-word">Couvreur</span>
+      <span class="metiers-title-sep" aria-hidden="true">·</span>
+      <span class="metiers-title-word">Zingueur</span>
+    </h2>
+    <p class="metiers-lead reveal text-dim">
+      Cinq savoir-faire complémentaires au service de vos projets à Saint-Ambroix,
+      dans le Gard et les Cévennes&nbsp;: du bois à la toiture, de la création à la rénovation.
+    </p>
+
+    <ul class="metiers-grid" role="list">
+      {site.metiers.map((m, i) => {
+        const cover = photoParMetier[m.id] ?? withBase(m.image);
+        const alt = (m as any).alt ?? `${m.titre} — Marant Jonathan, Saint-Ambroix`;
+        const keywords = seoParMetier[m.id] ?? '';
+        return (
+        <li class="reveal" style={`transition-delay: ${i * .08}s`}>
+          <a
+            href={`${withBase('/realisations')}?filtre=${m.id}`}
+            class="metier-card"
+            aria-label={`${m.titre} — voir les réalisations`}
+            data-keywords={keywords}
+          >
+            <figure class="metier-media">
+              <img
+                src={cover}
+                alt={alt}
+                loading="lazy"
+                decoding="async"
+                width="800"
+                height="600"
+              />
+              <figcaption class="metier-badge">{m.titre}</figcaption>
+              <span class="metier-gradient" aria-hidden="true"></span>
+            </figure>
+            <div class="metier-body">
+              <h3>{(m as any).sousTitre ?? m.titre}</h3>
+              <p>{m.description}</p>
+              <span class="metier-cta" aria-hidden="true">Voir les projets &rarr;</span>
+            </div>
+          </a>
+        </li>
+        );
+      })}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .metiers h2 {
+    margin-block: .5rem var(--space-sm);
+  }
+
+  .metiers-title {
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: baseline;
+    gap: .35rem .6rem;
+    font-size: clamp(1.25rem, 4.2vw, 3rem);
+    line-height: 1.15;
+  }
+
+  .metiers-title-word {
+    white-space: nowrap;
+  }
+
+  .metiers-title-sep {
+    color: var(--accent);
+    font-weight: 300;
+    opacity: .9;
+  }
+
+  @media (max-width: 480px) {
+    .metiers-title {
+      gap: .25rem .45rem;
+      font-size: clamp(1.15rem, 5.5vw, 1.8rem);
+    }
+  }
+
+  .metiers-lead {
+    text-align: center;
+    max-width: 60ch;
+    margin: 0 auto var(--space-lg);
+    font-size: .95rem;
+  }
+
+  .metiers-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
+
+  .metiers-grid > li {
+    display: flex;
+  }
+
+  @media (min-width: 640px) {
+    .metiers-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-md);
+    }
+  }
+
+  /* Sur grille 6 colonnes : 3 cartes (2 cols chacune) sur la 1re ligne,
+     2 cartes centrées (2 cols chacune, décalées) sur la 2e ligne. */
+  @media (min-width: 1024px) {
+    .metiers-grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+    .metiers-grid > li {
+      grid-column: span 2;
+    }
+    .metiers-grid > li:nth-child(4) {
+      grid-column: 2 / span 2;
+    }
+    .metiers-grid > li:nth-child(5) {
+      grid-column: 4 / span 2;
+    }
+  }
+
+  @media (min-width: 1400px) {
+    .metiers-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+    .metiers-grid > li,
+    .metiers-grid > li:nth-child(4),
+    .metiers-grid > li:nth-child(5) {
+      grid-column: span 1;
+    }
+  }
+
+  .metier-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+    width: 100%;
+    height: 100%;
+    color: inherit;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .metier-card:hover,
+  .metier-card:focus-visible {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 14px 36px -24px rgba(0, 0, 0, .8), 0 0 0 1px var(--accent-glow);
+  }
+
+  .metier-card:focus-visible {
+    outline: none;
+  }
+
+  .metier-media {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background-color: var(--surface-up);
+  }
+
+  .metier-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform .6s cubic-bezier(.4, 0, .2, 1);
+  }
+
+  .metier-card:hover .metier-media img,
+  .metier-card:focus-visible .metier-media img {
+    transform: scale(1.06);
+  }
+
+  .metier-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10, 10, 10, .85) 0%, rgba(10, 10, 10, .1) 45%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .metier-badge {
+    position: absolute;
+    left: .75rem;
+    bottom: .75rem;
+    z-index: 1;
+    padding: .35rem .7rem;
+    background: rgba(10, 10, 10, .72);
+    color: var(--accent-light);
+    border: 1px solid var(--accent);
+    font-family: var(--font-body);
+    font-size: .72rem;
+    font-weight: 500;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .metier-body {
+    padding: var(--space-sm);
+    display: flex;
+    flex-direction: column;
+    gap: .55rem;
+    flex: 1;
+  }
+
+  @media (min-width: 768px) {
+    .metier-body {
+      padding: var(--space-md);
+      gap: .75rem;
+    }
+  }
+
+  .metier-body h3 {
+    font-weight: 400;
+    font-size: clamp(1.1rem, 1.8vw, 1.45rem);
+    line-height: 1.25;
+  }
+
+  .metier-body p {
+    color: var(--text-dim);
+    font-size: .9rem;
+    line-height: 1.65;
+  }
+
+  .metier-cta {
+    margin-top: auto;
+    padding-top: .4rem;
+    font-size: .76rem;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    transition: letter-spacing var(--transition), color var(--transition);
+  }
+
+  .metier-card:hover .metier-cta,
+  .metier-card:focus-visible .metier-cta {
+    letter-spacing: .14em;
+    color: var(--accent-light);
+  }
+
+  /* Accessibilité : suppression de l’animation pour ceux qui le demandent */
+  @media (prefers-reduced-motion: reduce) {
+    .metier-card,
+    .metier-media img,
+    .metier-cta {
+      transition: none;
+    }
+    .metier-card:hover {
+      transform: none;
+    }
+  }
+</style>

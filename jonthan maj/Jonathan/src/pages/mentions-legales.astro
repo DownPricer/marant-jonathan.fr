@@ -1,0 +1,219 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import site from '../data/site.json';
+import { telHref } from '../utils/phone';
+
+const adresseComplete = `${site.adresse.rue}, ${site.adresse.codePostal} ${site.adresse.ville}, France`;
+const j = site.juridique;
+const nomLegal = j?.denomination ?? site.nom;
+const formeJuridique = j?.forme ?? 'Entreprise individuelle';
+---
+
+<Layout
+  title="Mentions légales"
+  description={`Mentions légales du site ${site.marque} — éditeur, hébergeur, propriété intellectuelle et coordonnées de contact.`}
+  noindex={true}
+>
+  <section class="page-header">
+    <div class="container">
+      <Breadcrumb crumbs={[{ label: 'Mentions légales' }]} />
+      <p class="overline reveal">Informations légales</p>
+      <h1 class="reveal">Mentions légales</h1>
+      <p class="page-intro text-dim reveal">
+        Conformément aux dispositions des articles 6-III et 19 de la loi pour la
+        Confiance dans l'Économie Numérique, nous portons à la connaissance des
+        utilisateurs du site les informations suivantes.
+      </p>
+    </div>
+  </section>
+
+  <section class="section legal-body">
+    <div class="container legal-content">
+      <article class="reveal">
+        <h2>Éditeur du site</h2>
+        <ul class="legal-list">
+          <li><strong>Nom :</strong> {nomLegal}</li>
+          <li><strong>Statut :</strong> {formeJuridique}</li>
+          <li><strong>Adresse :</strong> {adresseComplete}</li>
+          <li><strong>Numéro SIRET :</strong> {j?.siret ?? '—'}</li>
+          <li><strong>Numéro SIREN :</strong> {j?.siren ?? '—'}</li>
+          <li>
+            <strong>Code APE / NAF :</strong>{' '}
+            {j ? `${j.codeNaf} — ${j.libelleNaf}` : '—'}
+          </li>
+          <li><strong>N° TVA intracommunautaire :</strong> {j?.tvaIntracommunautaire ?? '—'}</li>
+          <li><strong>Responsable de la publication :</strong> {nomLegal}</li>
+        </ul>
+      </article>
+
+      <article class="reveal">
+        <h2>Hébergement du site</h2>
+        <ul class="legal-list">
+          <li><strong>Nom de l'hébergeur :</strong> OVH SAS (OVHcloud)</li>
+          <li><strong>Adresse :</strong> 2 rue Kellermann, 59100 Roubaix, France</li>
+          <li>
+            <strong>Téléphone :</strong>{' '}
+            <a href="tel:+33972101007">+33 9 72 10 10 07</a>
+            {' '}(mobile ou étranger) · 1007 depuis un poste fixe en France
+          </li>
+        </ul>
+      </article>
+
+      <article class="reveal">
+        <h2>Coordonnées de contact</h2>
+        <ul class="legal-list">
+          {site.telephone && (
+            <li>
+              <strong>Téléphone :</strong>{' '}
+              <a href={`tel:${telHref(site.telephone)}`}>{site.telephone}</a>
+            </li>
+          )}
+          {site.email && (
+            <li>
+              <strong>Email :</strong>{' '}
+              <a href={`mailto:${site.email}`}>{site.email}</a>
+            </li>
+          )}
+        </ul>
+      </article>
+
+      <article class="reveal">
+        <h2>Propriété intellectuelle</h2>
+        <p>
+          L'ensemble des contenus (textes, images, logos, réalisations) présents
+          sur ce site est la propriété exclusive de {nomLegal}, sauf mentions
+          contraires. Toute reproduction, distribution ou utilisation sans
+          autorisation préalable et écrite est interdite et constituerait une
+          contrefaçon sanctionnée par les articles L.335-2 et suivants du Code
+          de la propriété intellectuelle.
+        </p>
+      </article>
+
+      <article class="reveal">
+        <h2>Limitation de responsabilité</h2>
+        <p>
+          L'information diffusée sur ce site est donnée à titre indicatif.
+          {' '}{nomLegal} s'efforce de maintenir le site à jour, mais ne peut
+          garantir l'exactitude, la complétude ou l'exhaustivité des
+          informations mises à disposition. En conséquence, l'utilisateur
+          reconnaît utiliser ces informations sous sa responsabilité exclusive.
+        </p>
+      </article>
+
+      <article class="reveal">
+        <h2>Droit applicable</h2>
+        <p>
+          Les présentes mentions légales sont régies par le droit français. En
+          cas de litige, et après tentative de recherche d'une solution amiable,
+          compétence expresse est attribuée aux tribunaux français compétents.
+        </p>
+      </article>
+
+      <p class="legal-update reveal">Dernière mise à jour : avril 2026.</p>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .page-header {
+    padding-top: calc(var(--header-height) + var(--space-xl));
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-header h1 {
+    margin-block: .5rem var(--space-sm);
+  }
+
+  .page-intro {
+    font-size: 1.05rem;
+    max-width: 65ch;
+  }
+
+  @media (max-width: 1023px) {
+    .page-header {
+      padding-top: calc(var(--header-height) + var(--space-md) + env(safe-area-inset-top, 0px));
+      padding-bottom: var(--space-sm);
+    }
+
+    .page-header h1 {
+      margin-top: .35rem;
+      font-size: clamp(1.4rem, 4vw + 0.5rem, 2rem);
+      line-height: 1.2;
+    }
+  }
+
+  .legal-body {
+    padding-block: var(--space-xl);
+  }
+
+  .legal-content {
+    max-width: 75ch;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .legal-content article {
+    display: flex;
+    flex-direction: column;
+    gap: .85rem;
+  }
+
+  .legal-content h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1vw + 1rem, 1.6rem);
+    font-weight: 400;
+    letter-spacing: .02em;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: .5rem;
+  }
+
+  .legal-content p {
+    color: var(--text-dim);
+    line-height: 1.75;
+    font-size: .95rem;
+  }
+
+  .legal-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .55rem;
+  }
+
+  .legal-list li {
+    color: var(--text-dim);
+    line-height: 1.6;
+    font-size: .95rem;
+  }
+
+  .legal-list li strong {
+    color: var(--text);
+    font-weight: 500;
+    margin-right: .35rem;
+  }
+
+  .legal-list a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--accent);
+  }
+
+  .legal-list a:hover {
+    color: var(--accent);
+  }
+
+  .legal-update {
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border);
+    font-size: .85rem !important;
+    font-style: italic;
+    opacity: .75;
+  }
+</style>
