@@ -2,11 +2,9 @@
 import Layout from '../layouts/Layout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import site from '../data/site.json';
-import { withBase } from '../utils/base';
 
 const adresseComplete = `${site.adresse.rue}, ${site.adresse.codePostal} ${site.adresse.ville}, France`;
 const nomLegal = site.juridique?.denomination ?? site.nom;
-const mentionsHref = withBase('/mentions-legales/');
 ---
 
 <Layout
@@ -109,7 +107,7 @@ const mentionsHref = withBase('/mentions-legales/');
             </>
           )}
           {' '}ou par courrier à l'adresse indiquée dans les
-          <a href={mentionsHref}> mentions légales</a> ({adresseComplete}).
+          <a href="/mentions-legales/"> mentions légales</a> ({adresseComplete}).
           Je m'engage à vous répondre dans un délai maximum d'un mois.
         </p>
       </article>

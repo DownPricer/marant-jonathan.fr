@@ -9,7 +9,11 @@ const prenomAbout = nomParts[0] ?? site.nom;
 const nomFamilleAbout = nomParts.length > 1 ? nomParts.slice(1).join(' ') : '';
 ---
 
-<Layout title="À propos" description="Marant Jonathan, menuisier, charpentier, ebeniste, couvreur et zingueur à Saint-Ambroix (30). Menuiserie, ébénisterie, charpente, zinguerie et couverture pour particuliers et professionnels.">
+<Layout
+  title="À propos"
+  description="Marant Jonathan, menuisier, charpentier, ebeniste, couvreur et zingueur à Saint-Ambroix (30). Menuiserie, ébénisterie, charpente, zinguerie et couverture pour particuliers et professionnels."
+  keywords={`${site.nom} artisan, menuisier charpentier Saint-Ambroix, savoir-faire bois Gard, ${site.marque}`}
+>
   <section class="page-header">
     <div class="container">
       <Breadcrumb crumbs={[{ label: 'À propos' }]} />

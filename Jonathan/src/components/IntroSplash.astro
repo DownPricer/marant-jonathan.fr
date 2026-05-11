@@ -8,8 +8,7 @@ import { metiersLabelsFromSousTitre } from '../utils/metiers';
 const nomParts = site.nom.trim().split(/\s+/);
 const prenom = nomParts[0] ?? site.nom;
 const nomFamille = nomParts.length > 1 ? nomParts.slice(1).join(' ') : '';
-const introFinAvatarWebp = withCacheBust(withBase('/logo/intro-avatar-fin.webp'));
-const introFinAvatarUrl = withCacheBust(withBase('/logo/intro-avatar-fin.png'));
+const introFinAvatarUrl = withCacheBust(withBase('/logo/intro-avatar-fin.webp'));
 /** Visuels intro (fichiers dans `public/images/intro/`). */
 const imgMenuiserie = withBase('/images/intro/menuiserie3.webp');
 const imgCharpentier = withBase('/images/intro/charpentier.webp');
@@ -81,17 +80,14 @@ const metierCycle =
           <div class="intro-avatar-stack__motion">
             <div class="intro-avatar-frame">
               <div class="intro-avatar-inner">
-                <picture>
-                  <source srcset={introFinAvatarWebp} type="image/webp" />
-                  <img
-                    class="intro-avatar-img"
-                    src={introFinAvatarUrl}
-                    alt=""
-                    width="1024"
-                    height="972"
-                    decoding="async"
-                  />
-                </picture>
+                <img
+                  class="intro-avatar-img"
+                  src={introFinAvatarUrl}
+                  alt=""
+                  width="1024"
+                  height="972"
+                  decoding="async"
+                />
               </div>
             </div>
           </div>

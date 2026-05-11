@@ -6,18 +6,11 @@ import sitemap from '@astrojs/sitemap';
 
 /** Déposez tout le dossier du projet sur Netlify : voir _redirects à la racine + npm run build:netlify-drop */
 const netlifyDrop = process.env.NETLIFY_DROP === '1';
-const siteUrl = (process.env.SITE_URL || 'https://jonathan-artisan.fr').replace(/\/+$/, '');
+
+const siteOrigin = 'https://jonathan-artisan.fr';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projets = JSON.parse(readFileSync(join(__dirname, 'src', 'data', 'projets.json'), 'utf8'));
-
-function siteOriginFallback() {
-  try {
-    return new URL(siteUrl).origin;
-  } catch {
-    return 'https://jonathan-artisan.fr';
-  }
-}
 
 /** Préfixe d’URL pour les assets statiques (/images/…) selon le déploiement (racine ou /dist/). */
 function assetBase(pageUrl) {
@@ -28,7 +21,7 @@ function assetBase(pageUrl) {
     }
     return u.origin;
   } catch {
-    return siteOriginFallback();
+    return siteOrigin;
   }
 }
 
@@ -88,7 +81,7 @@ function imagesForSitemapEntry(item) {
 }
 
 export default defineConfig({
-  site: siteUrl,
+  site: siteOrigin,
   base: netlifyDrop ? '/dist/' : '/',
   compressHTML: true,
   build: { inlineStylesheets: 'auto' },

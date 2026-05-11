@@ -9,149 +9,528 @@ const googleAvisUrl =
     ? ((site as Record<string, unknown>).googleAvisUrl as string)
     : '';
 
-/** Passer à `true` lorsque l’envoi du formulaire sera branché (API, Netlify, etc.) */
-const formulaireEnLigne = false;
+const metiers = site.metiers as { id: string; titre: string }[];
+const politiqueHref = withBase('/politique-confidentialite/');
+const emailTo = site.email ?? '';
 ---
 
 <section class="section contact-section" id="contact">
   <div class="container">
-    <div class="contact-grid">
-      <div class="contact-info reveal">
+    <div class="contact-stack">
+      <header class="contact-header reveal">
         <p class="overline">Contact</p>
         <h2>Parlons de votre projet</h2>
-        <p class="text-dim">
-          Chaque réalisation commence par un échange. Décrivez votre projet et
-          nous vous recontacterons rapidement pour en discuter.
-        </p>
+      </header>
 
-        <div class="contact-details">
-          <div class="contact-item">
-            <span class="contact-label">Téléphone</span>
-            {site.telephone ? (
-              <a href={`tel:${telHref(site.telephone)}`}>{site.telephone}</a>
-            ) : (
-              <span class="text-dim">{site.telephoneHint}</span>
-            )}
-          </div>
-          <div class="contact-item">
-            <span class="contact-label">Email</span>
-            {site.email ? (
-              <a href={`mailto:${site.email}`}>{site.email}</a>
-            ) : (
-              <span class="text-dim">{site.emailHint}</span>
-            )}
-          </div>
-          {(site.pagesJaunesUrl || googleAvisUrl) && (
-            <div class="contact-badges" aria-label="Annuaires et avis">
-              {site.pagesJaunesUrl && (
-                <a
-                  class="contact-pj"
-                  href={site.pagesJaunesUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Pages Jaunes — fiche entreprise"
-                >
-                  <img
-                    src={withBase('/images/pages-jaunes-logo.svg')}
-                    alt=""
-                    width="176"
-                    height="36"
-                    decoding="async"
-                  />
-                </a>
-              )}
-              {googleAvisUrl && <GoogleAvisLink />}
-            </div>
+      <div class="contact-details reveal">
+        <div class="contact-item">
+          <span class="contact-label">Téléphone</span>
+          {site.telephone ? (
+            <a href={`tel:${telHref(site.telephone)}`}>{site.telephone}</a>
+          ) : (
+            <span class="text-dim">{site.telephoneHint}</span>
           )}
-          <div class="contact-item">
-            <span class="contact-label">Adresse</span>
-            <span>{site.adresse.rue}<br />{site.adresse.codePostal} {site.adresse.ville}</span>
+        </div>
+        <div class="contact-item">
+          <span class="contact-label">Email</span>
+          {site.email ? (
+            <a href={`mailto:${site.email}`}>{site.email}</a>
+          ) : (
+            <span class="text-dim">{site.emailHint}</span>
+          )}
+        </div>
+        {(site.pagesJaunesUrl || googleAvisUrl) && (
+          <div class="contact-badges" aria-label="Annuaires et avis">
+            {site.pagesJaunesUrl && (
+              <a
+                class="contact-pj"
+                href={site.pagesJaunesUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Pages Jaunes — fiche entreprise"
+              >
+                <img
+                  src={withBase('/images/pages-jaunes-logo.svg')}
+                  alt=""
+                  width="176"
+                  height="36"
+                  decoding="async"
+                />
+              </a>
+            )}
+            {googleAvisUrl && <GoogleAvisLink />}
           </div>
-          <div class="contact-item">
-            <span class="contact-label">Horaires</span>
-            <span>{site.horaires}</span>
-          </div>
+        )}
+        <div class="contact-item">
+          <span class="contact-label">Adresse</span>
+          <span>{site.adresse.rue}<br />{site.adresse.codePostal} {site.adresse.ville}</span>
+        </div>
+        <div class="contact-item">
+          <span class="contact-label">Horaires</span>
+          <span>{site.horaires}</span>
         </div>
       </div>
 
-      {formulaireEnLigne ? (
-        <form class="contact-form reveal" action="#" method="POST">
-          <div class="form-group">
-            <label for="name">Nom complet</label>
-            <input type="text" id="name" name="name" required autocomplete="name" />
+      <p class="contact-lead text-dim reveal">
+        Chaque réalisation commence par un échange. Décrivez votre projet et
+        nous vous recontacterons rapidement pour en discuter.
+      </p>
+
+      <form
+        id="contact-devis-form"
+        class="contact-form reveal"
+        data-email={emailTo}
+        novalidate
+      >
+        <fieldset class="form-fieldset form-fieldset--metiers">
+          <legend class="form-legend">Votre demande concerne</legend>
+          <div class="metier-grid" role="radiogroup" aria-labelledby="legend-metier">
+            <span id="legend-metier" class="sr-only">Choisir le métier concerné</span>
+            {
+              metiers.map((m, i) => (
+                <label class="metier-tile">
+                  <input type="radio" name="metier" value={m.id} required={i === 0} />
+                  <span class="metier-tile__body">
+                    <span class="metier-tile__title">{m.titre}</span>
+                  </span>
+                </label>
+              ))
+            }
           </div>
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required autocomplete="email" />
-          </div>
-          <div class="form-group">
-            <label for="phone">Téléphone</label>
-            <input type="tel" id="phone" name="phone" autocomplete="tel" />
-          </div>
-          <div class="form-group">
-            <label for="subject">Type de projet</label>
-            <select id="subject" name="subject">
-              <option value="">— Choisir —</option>
-              <option value="menuiserie">Menuiserie</option>
-              <option value="charpente">Charpente</option>
-              <option value="zinguerie">Zinguerie & étanchéité</option>
-              <option value="pvc">Rénovation menuiserie PVC</option>
-              <option value="autre">Autre</option>
-            </select>
-          </div>
-          <div class="form-group full">
-            <label for="message">Décrivez votre projet</label>
-            <textarea id="message" name="message" rows="5" required></textarea>
-          </div>
-          <button type="submit" class="btn btn--filled full">Envoyer ma demande</button>
-        </form>
-      ) : (
-        <div
-          class="contact-unavailable reveal"
-          role="status"
-          aria-live="polite"
-        >
-          <div class="contact-unavailable__glow" aria-hidden="true"></div>
-          <div class="contact-unavailable__card">
-            <div class="contact-unavailable__badge">
-              <span class="contact-unavailable__dot" aria-hidden="true"></span>
-              <span>Formulaire</span>
+        </fieldset>
+
+        <div class="metier-panels">
+          <div class="metier-panel" data-metier-panel="menuiserie" hidden>
+            <p class="panel-hint">Menuiserie</p>
+            <div class="form-group full">
+              <label for="ms-ouvrage">Type d’ouvrage</label>
+              <select id="ms-ouvrage" name="ms_ouvrage">
+                <option value="">— Préciser si vous le savez —</option>
+                <option value="Portes">Portes</option>
+                <option value="Fenêtres">Fenêtres</option>
+                <option value="Escalier">Escalier</option>
+                <option value="Dressing / placard">Dressing / placard</option>
+                <option value="Habillage / lambris">Habillage / lambris</option>
+                <option value="Terrasse bois">Terrasse bois</option>
+                <option value="Autre">Autre</option>
+              </select>
             </div>
-            <p class="contact-unavailable__title">Indisponible momentanément</p>
-            <p class="contact-unavailable__text">
-              L’envoi de messages depuis le site n’est pas encore activé. Utilisez les coordonnées à gauche
-              (téléphone, email, adresse) pour nous joindre.
-            </p>
+            <div class="form-group full">
+              <label for="ms-contexte">Contexte</label>
+              <select id="ms-contexte" name="ms_contexte">
+                <option value="">—</option>
+                <option value="Construction neuve">Construction neuve</option>
+                <option value="Rénovation">Rénovation</option>
+                <option value="Remplacement">Remplacement</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label for="ms-dim">Dimensions ou surface <span class="label-opt">(facultatif)</span></label>
+              <input
+                type="text"
+                id="ms-dim"
+                name="ms_dimensions"
+                maxlength="200"
+                placeholder="Ex. ouverture L. 90 × H. 215 cm"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+
+          <div class="metier-panel" data-metier-panel="charpente" hidden>
+            <p class="panel-hint">Charpente</p>
+            <div class="form-group full">
+              <label for="ch-type">Type de prestation</label>
+              <select id="ch-type" name="ch_type">
+                <option value="">—</option>
+                <option value="Charpente traditionnelle">Charpente traditionnelle</option>
+                <option value="Fermettes / industrielle">Fermettes / industrielle</option>
+                <option value="Ossature, carport, auvent">Ossature, carport, auvent</option>
+                <option value="Réparation / renfort">Réparation / renfort</option>
+                <option value="Autre">Autre</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label for="ch-contexte">Contexte</label>
+              <select id="ch-contexte" name="ch_contexte">
+                <option value="">—</option>
+                <option value="Neuf">Neuf</option>
+                <option value="Rénovation">Rénovation</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label for="ch-surface">Surface au sol ou détails <span class="label-opt">(facultatif)</span></label>
+              <input
+                type="text"
+                id="ch-surface"
+                name="ch_surface"
+                maxlength="200"
+                placeholder="Ex. ~80 m² au sol, accès rue étroite…"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+
+          <div class="metier-panel" data-metier-panel="ebenisterie" hidden>
+            <p class="panel-hint">Ébénisterie & mobilier</p>
+            <div class="form-group full">
+              <label for="eb-type">Type de création</label>
+              <select id="eb-type" name="eb_type">
+                <option value="">—</option>
+                <option value="Bibliothèque">Bibliothèque</option>
+                <option value="Dressing">Dressing</option>
+                <option value="Table / bureau">Table / bureau</option>
+                <option value="Commode / meuble de rangement">Commode / meuble de rangement</option>
+                <option value="Autre mobilier">Autre mobilier</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label for="eb-bois">Essence ou finition souhaitée <span class="label-opt">(facultatif)</span></label>
+              <input
+                type="text"
+                id="eb-bois"
+                name="eb_bois"
+                maxlength="120"
+                placeholder="Ex. chêne massif, laqué blanc…"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+
+          <div class="metier-panel" data-metier-panel="couverture" hidden>
+            <p class="panel-hint">Couverture</p>
+            <div class="form-group full">
+              <label for="cv-type">Type de couverture</label>
+              <select id="cv-type" name="cv_type">
+                <option value="">—</option>
+                <option value="Tuiles">Tuiles</option>
+                <option value="Ardoises">Ardoises</option>
+                <option value="Bac acier">Bac acier</option>
+                <option value="Zinc">Zinc</option>
+                <option value="Je ne sais pas">Je ne sais pas</option>
+                <option value="Autre">Autre</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label for="cv-besoin">Nature du besoin</label>
+              <select id="cv-besoin" name="cv_besoin">
+                <option value="">—</option>
+                <option value="Projet neuf">Projet neuf</option>
+                <option value="Rénovation">Rénovation</option>
+                <option value="Fuite / urgence">Fuite / urgence</option>
+                <option value="Entretien / petites réparations">Entretien / petites réparations</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label for="cv-toiture">Âge ou état de la toiture <span class="label-opt">(facultatif)</span></label>
+              <input
+                type="text"
+                id="cv-toiture"
+                name="cv_toiture"
+                maxlength="160"
+                placeholder="Ex. maison des années 1980, tuiles cassées au faîtage…"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+
+          <div class="metier-panel" data-metier-panel="zinguerie" hidden>
+            <p class="panel-hint">Zinguerie</p>
+            <div class="form-group full">
+              <label for="zn-element">Élément concerné</label>
+              <select id="zn-element" name="zn_element">
+                <option value="">—</option>
+                <option value="Gouttières & descentes">Gouttières & descentes</option>
+                <option value="Chéneaux">Chéneaux</option>
+                <option value="Solins, raccords, noues">Solins, raccords, noues</option>
+                <option value="Habillage zinc">Habillage zinc</option>
+                <option value="Autre">Autre</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label for="zn-contexte">Contexte</label>
+              <select id="zn-contexte" name="zn_contexte">
+                <option value="">—</option>
+                <option value="Neuf">Neuf</option>
+                <option value="Rénovation">Rénovation</option>
+                <option value="Réparation / fuite">Réparation / fuite</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label for="zn-longueur">Longueur linéaire ou précisions <span class="label-opt">(facultatif)</span></label>
+              <input
+                type="text"
+                id="zn-longueur"
+                name="zn_longueur"
+                maxlength="160"
+                placeholder="Ex. ~25 m de gouttière côté rue…"
+                autocomplete="off"
+              />
+            </div>
           </div>
         </div>
-      )}
+
+        <p class="panel-placeholder text-dim" id="metier-placeholder" data-metier-placeholder>
+          Choisissez un métier pour afficher les champs adaptés.
+        </p>
+
+        <fieldset class="form-fieldset">
+          <legend class="form-legend">Vos coordonnées</legend>
+          <div class="form-group full">
+            <label for="cd-nom">Nom et prénom</label>
+            <input type="text" id="cd-nom" name="nom" required autocomplete="name" maxlength="120" />
+          </div>
+          <div class="form-group">
+            <label for="cd-email">Email</label>
+            <input type="email" id="cd-email" name="email" required autocomplete="email" maxlength="120" />
+          </div>
+          <div class="form-group">
+            <label for="cd-tel">Téléphone</label>
+            <input type="tel" id="cd-tel" name="telephone" required autocomplete="tel" maxlength="40" />
+          </div>
+          <div class="form-group full">
+            <label for="cd-commune">Commune du chantier</label>
+            <input
+              type="text"
+              id="cd-commune"
+              name="commune"
+              required
+              autocomplete="address-level2"
+              maxlength="120"
+              placeholder="Ex. Saint-Ambroix"
+            />
+          </div>
+          <div class="form-group full">
+            <span class="form-legend form-legend--inline">Vous êtes</span>
+            <div class="inline-radios">
+              <label class="radio-inline">
+                <input type="radio" name="profil" value="Particulier" checked />
+                Particulier
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="profil" value="Professionnel" />
+                Professionnel
+              </label>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="form-group full">
+          <label for="cd-message">Votre projet</label>
+          <textarea id="cd-message" name="message" rows="5" required minlength="20" maxlength="4000"></textarea>
+        </div>
+
+        <div class="form-group full form-group--honeypot" aria-hidden="true">
+          <label for="cd-website">Ne pas remplir</label>
+          <input type="text" id="cd-website" name="website" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div class="form-group full form-group--rgpd">
+          <label class="checkbox-rgpd">
+            <input type="checkbox" name="rgpd" value="1" required />
+            <span>
+              J’accepte que mes données soient utilisées pour répondre à ma demande, conformément à la
+              <a href={politiqueHref} target="_blank" rel="noopener noreferrer">politique de confidentialité</a>.
+            </span>
+          </label>
+        </div>
+
+        <p class="form-error text-dim" id="contact-form-error" hidden role="alert"></p>
+
+        <button type="submit" class="btn btn--filled contact-form__submit">Envoyer</button>
+      </form>
     </div>
   </div>
 </section>
 
+<script>
+  (function () {
+    const form = document.getElementById('contact-devis-form');
+    if (!form || !(form instanceof HTMLFormElement)) return;
+
+    const email = form.dataset.email || '';
+    const panels = form.querySelectorAll('[data-metier-panel]');
+    const placeholder = form.querySelector('[data-metier-placeholder]');
+    const errEl = document.getElementById('contact-form-error');
+    const metierTitles = {
+      menuiserie: 'Menuisier',
+      charpente: 'Charpentier',
+      ebenisterie: 'Ébéniste',
+      couverture: 'Couvreur',
+      zinguerie: 'Zingueur',
+    };
+
+    function setPanelEnabled(panel, on) {
+      panel.querySelectorAll('input, select, textarea').forEach(function (el) {
+        el.disabled = !on;
+      });
+    }
+
+    function showMetier(metier) {
+      panels.forEach(function (p) {
+        const on = p.dataset.metierPanel === metier;
+        p.hidden = !on;
+        setPanelEnabled(p, on);
+      });
+      if (placeholder) placeholder.hidden = Boolean(metier);
+    }
+
+    panels.forEach(function (p) {
+      setPanelEnabled(p, false);
+    });
+    showMetier(null);
+
+    form.querySelectorAll('input[name="metier"]').forEach(function (radio) {
+      radio.addEventListener('change', function () {
+        if (radio.checked) showMetier(radio.value);
+      });
+    });
+
+    function collectMetierLines(metier) {
+      const fd = new FormData(form);
+      function line(label, key) {
+        const v = fd.get(key);
+        if (v && String(v).trim()) return label + ' : ' + String(v).trim();
+        return '';
+      }
+      const out = [];
+      switch (metier) {
+        case 'menuiserie':
+          out.push(line('Type d’ouvrage', 'ms_ouvrage'), line('Contexte', 'ms_contexte'), line('Dimensions', 'ms_dimensions'));
+          break;
+        case 'charpente':
+          out.push(line('Type de prestation', 'ch_type'), line('Contexte', 'ch_contexte'), line('Surface / détails', 'ch_surface'));
+          break;
+        case 'ebenisterie':
+          out.push(line('Type de création', 'eb_type'), line('Bois / finition', 'eb_bois'));
+          break;
+        case 'couverture':
+          out.push(line('Type de couverture', 'cv_type'), line('Nature du besoin', 'cv_besoin'), line('Toiture', 'cv_toiture'));
+          break;
+        case 'zinguerie':
+          out.push(line('Élément', 'zn_element'), line('Contexte', 'zn_contexte'), line('Longueur / précisions', 'zn_longueur'));
+          break;
+        default:
+          break;
+      }
+      return out.filter(Boolean);
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (errEl) {
+        errEl.hidden = true;
+        errEl.textContent = '';
+      }
+
+      const hp = form.querySelector('#cd-website');
+      if (hp && 'value' in hp && hp.value) return;
+
+      const fd = new FormData(form);
+      const metier = String(fd.get('metier') || '');
+      if (!metier) return;
+
+      const nom = String(fd.get('nom') || '').trim();
+      const mail = String(fd.get('email') || '').trim();
+      const tel = String(fd.get('telephone') || '').trim();
+      const commune = String(fd.get('commune') || '').trim();
+      const profil = String(fd.get('profil') || '').trim();
+      const message = String(fd.get('message') || '').trim();
+      const rgpd = fd.get('rgpd');
+
+      if (!nom || !mail || !tel || !commune || !message) {
+        if (errEl) {
+          errEl.textContent = 'Merci de remplir tous les champs obligatoires.';
+          errEl.hidden = false;
+        }
+        return;
+      }
+      if (message.length < 20) {
+        if (errEl) {
+          errEl.textContent = 'Décrivez un peu plus votre projet (au moins 20 caractères).';
+          errEl.hidden = false;
+        }
+        return;
+      }
+      if (!rgpd) {
+        if (errEl) {
+          errEl.textContent = 'Veuillez accepter la politique de confidentialité pour continuer.';
+          errEl.hidden = false;
+        }
+        return;
+      }
+      if (!email) {
+        if (errEl) {
+          errEl.textContent = 'Email de destination non configuré sur le site.';
+          errEl.hidden = false;
+        }
+        return;
+      }
+
+      const titre = metierTitles[metier] || metier;
+      const subject = `Devis site — ${titre} — ${nom}`;
+      const detailLines = collectMetierLines(metier);
+      const body = [
+        `Demande de devis — ${titre}`,
+        '',
+        '--- Coordonnées ---',
+        `Nom : ${nom}`,
+        `Email : ${mail}`,
+        `Téléphone : ${tel}`,
+        `Commune du chantier : ${commune}`,
+        `Profil : ${profil || '—'}`,
+        '',
+        '--- Détails métier ---',
+        ...detailLines,
+        '',
+        '--- Projet ---',
+        message,
+        '',
+        '—',
+        'Message généré depuis jonathan-artisan.fr (formulaire de contact)',
+      ].join('\n');
+
+      const max = 1800;
+      const bodyUse = body.length > max ? `${body.slice(0, max)}\n\n[… message tronqué : complétez dans votre email si besoin]` : body;
+      const url = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyUse)}`;
+      window.location.href = url;
+    });
+  })();
+</script>
+
 <style>
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-xl);
+  .contact-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    max-width: 720px;
+    margin-inline: auto;
   }
 
-  @media (min-width: 1024px) {
-    .contact-grid {
-      grid-template-columns: 1fr 1fr;
-      align-items: start;
+  @media (min-width: 900px) {
+    .contact-stack {
+      max-width: 880px;
     }
   }
 
-  .contact-info h2 {
-    margin-block: .5rem var(--space-sm);
+  .contact-header h2 {
+    margin-block: 0.5rem 0;
+  }
+
+  .contact-header .overline {
+    margin-bottom: 0.25rem;
   }
 
   .contact-details {
-    margin-top: var(--space-lg);
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
+  }
+
+  .contact-lead {
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.65;
   }
 
   .contact-label {
@@ -196,15 +575,243 @@ const formulaireEnLigne = false;
     display: block;
   }
 
-  /* Form */
   .contact-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--space-sm);
+    align-content: start;
+    padding-top: var(--space-xs);
+    border-top: 1px solid var(--border);
   }
 
-  .form-group.full, button.full {
+  .contact-form__submit {
     grid-column: 1 / -1;
+    justify-self: start;
+    min-width: 8.5rem;
+    margin-top: 0.35rem;
+  }
+
+  .form-fieldset {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 0;
+    border: none;
+    min-width: 0;
+  }
+
+  .form-fieldset--metiers {
+    margin-bottom: 0.25rem;
+  }
+
+  .form-legend {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.65rem;
+  }
+
+  .form-legend--inline {
+    margin-bottom: 0.45rem;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .metier-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .metier-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .metier-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+
+  .metier-tile {
+    position: relative;
+    display: flex;
+    cursor: pointer;
+    margin: 0;
+    min-height: 3.25rem;
+    align-items: stretch;
+  }
+
+  .metier-tile input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+  }
+
+  .metier-tile__body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.55rem 0.4rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition:
+      border-color var(--transition),
+      background 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .metier-tile__title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1.25;
+    color: var(--text);
+  }
+
+  .metier-tile:hover .metier-tile__body {
+    border-color: rgba(184, 149, 106, 0.45);
+  }
+
+  .metier-tile input:focus-visible + .metier-tile__body {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .metier-tile input:checked + .metier-tile__body {
+    border-color: var(--accent);
+    background: rgba(184, 149, 106, 0.1);
+    box-shadow: 0 0 0 1px rgba(184, 149, 106, 0.2);
+  }
+
+  .metier-panels {
+    grid-column: 1 / -1;
+    margin-top: 0.35rem;
+  }
+
+  .metier-panel {
+    padding: var(--space-sm) 0 var(--space-xs);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--space-sm);
+  }
+
+  .panel-hint {
+    margin: 0 0 0.65rem;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    color: var(--text);
+  }
+
+  .panel-placeholder {
+    grid-column: 1 / -1;
+    margin: 0 0 var(--space-sm);
+    font-size: 0.88rem;
+    padding: 0.65rem 0.85rem;
+    border: 1px dashed var(--border);
+    border-radius: 4px;
+  }
+
+  .panel-placeholder[hidden] {
+    display: none;
+  }
+
+  .form-group.full,
+  .form-fieldset,
+  .form-error {
+    grid-column: 1 / -1;
+  }
+
+  .form-group--honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .form-group--rgpd {
+    margin-top: 0.25rem;
+  }
+
+  .checkbox-rgpd {
+    display: flex;
+    gap: 0.65rem;
+    align-items: flex-start;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  .checkbox-rgpd input {
+    width: auto;
+    margin-top: 0.2rem;
+    flex-shrink: 0;
+    accent-color: var(--accent);
+  }
+
+  .checkbox-rgpd a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .checkbox-rgpd a:hover {
+    color: var(--accent-light);
+  }
+
+  .inline-radios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.25rem;
+  }
+
+  .radio-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.9rem;
+    color: var(--text);
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: normal;
+    font-weight: 400;
+  }
+
+  .radio-inline input {
+    width: auto;
+    accent-color: var(--accent);
+  }
+
+  .label-opt {
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+    font-size: 0.72rem;
+    opacity: 0.85;
   }
 
   label {
@@ -217,7 +824,9 @@ const formulaireEnLigne = false;
     margin-bottom: .4rem;
   }
 
-  input, select, textarea {
+  input,
+  select,
+  textarea {
     width: 100%;
     padding: .8rem 1rem;
     background: var(--surface);
@@ -228,7 +837,16 @@ const formulaireEnLigne = false;
     transition: border-color var(--transition);
   }
 
-  input:focus, select:focus, textarea:focus {
+  input:disabled,
+  select:disabled,
+  textarea:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
     border-color: var(--accent);
     outline: none;
   }
@@ -246,109 +864,15 @@ const formulaireEnLigne = false;
     min-height: 120px;
   }
 
+  .form-error {
+    margin: 0;
+    font-size: 0.88rem;
+    color: #c9a07a;
+  }
+
   @media (max-width: 640px) {
     .contact-form {
       grid-template-columns: 1fr;
     }
-  }
-
-  /* Formulaire désactivé — carte d’état */
-  .contact-unavailable {
-    position: relative;
-    min-height: 280px;
-    display: flex;
-    align-items: stretch;
-  }
-
-  .contact-unavailable__glow {
-    position: absolute;
-    inset: -1px;
-    border-radius: 6px;
-    background: radial-gradient(
-      ellipse 85% 70% at 50% 0%,
-      rgba(184, 149, 106, 0.14) 0%,
-      transparent 65%
-    );
-    pointer-events: none;
-  }
-
-  .contact-unavailable__card {
-    position: relative;
-    width: 100%;
-    padding: var(--space-md);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    background:
-      linear-gradient(145deg, rgba(26, 25, 23, 0.95) 0%, var(--surface) 55%, var(--bg) 100%);
-    box-shadow:
-      0 0 0 1px rgba(184, 149, 106, 0.08),
-      0 24px 48px rgba(0, 0, 0, 0.35);
-  }
-
-  .contact-unavailable__card::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 1.25rem;
-    bottom: 1.25rem;
-    width: 3px;
-    border-radius: 0 2px 2px 0;
-    background: linear-gradient(180deg, var(--accent-light), var(--accent));
-    opacity: 0.85;
-  }
-
-  .contact-unavailable__badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    padding: 0.35rem 0.75rem;
-    margin-bottom: 1rem;
-    font-size: 0.65rem;
-    font-weight: 600;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--accent-light);
-    border: 1px solid rgba(184, 149, 106, 0.35);
-    border-radius: 999px;
-    background: rgba(184, 149, 106, 0.08);
-  }
-
-  .contact-unavailable__dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 12px rgba(184, 149, 106, 0.65);
-    animation: unavailable-pulse 2.2s ease-in-out infinite;
-  }
-
-  @keyframes unavailable-pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.55; transform: scale(0.92); }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .contact-unavailable__dot {
-      animation: none;
-      opacity: 0.85;
-    }
-  }
-
-  .contact-unavailable__title {
-    font-family: var(--font-display);
-    font-size: clamp(1.45rem, 3.5vw, 1.85rem);
-    font-weight: 400;
-    letter-spacing: 0.03em;
-    color: var(--text);
-    margin-bottom: 0.65rem;
-    line-height: 1.2;
-  }
-
-  .contact-unavailable__text {
-    margin: 0;
-    max-width: 42ch;
-    font-size: 0.95rem;
-    line-height: 1.65;
-    color: var(--text-dim);
   }
 </style>

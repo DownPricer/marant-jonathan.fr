@@ -4,7 +4,7 @@
  * Après déploiement, rattache `${projectName}.vercel.app` au dernier déploiement (sinon l’URL
  * courte peut rester sur une ancienne version alors que les URLs uniques sont à jour).
  */
-import { cpSync, existsSync, readFileSync } from 'node:fs';
+import { cpSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { execSync, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -18,6 +18,35 @@ if (!existsSync(join(root, '.vercel', 'project.json'))) {
 }
 
 execSync('npm run build', { stdio: 'inherit' });
+
+/** Sans ceci, le déploiement `vercel deploy dist` lance `npm install` sur la racine uploadée (dist/) et échoue. */
+writeFileSync(
+  join(root, 'dist', 'package.json'),
+  JSON.stringify(
+    {
+      name: 'jonathan-artisan-static',
+      private: true,
+      version: '1.0.0',
+      description: 'Fichier minimal : le site est déjà construit dans ce dossier.',
+    },
+    null,
+    2
+  )
+);
+writeFileSync(
+  join(root, 'dist', 'vercel.json'),
+  JSON.stringify(
+    {
+      $schema: 'https://openapi.vercel.sh/vercel.json',
+      installCommand: 'npm install',
+      buildCommand: 'exit 0',
+      /** Racine du déploiement = fichiers statiques déjà générés (pas de sous-dossier dist). */
+      outputDirectory: '.',
+    },
+    null,
+    2
+  )
+);
 
 const dest = join(root, 'dist', '.vercel');
 cpSync(join(root, '.vercel'), dest, { recursive: true });

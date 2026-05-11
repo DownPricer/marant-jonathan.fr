@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
-  <rect width="1920" height="1080" fill="#1a1917"/>
-  <rect width="1920" height="1080" fill="url(#hg)" opacity=".4"/>
-  <defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b8956a" stop-opacity=".12"/><stop offset="1" stop-color="#0a0a0a"/></linearGradient></defs>
-  <text x="960" y="540" text-anchor="middle" font-family="Georgia,serif" font-size="36" fill="#b8956a" opacity=".35">HERO  remplacer par votre photo</text>
-</svg>

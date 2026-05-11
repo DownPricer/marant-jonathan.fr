@@ -13,15 +13,25 @@ interface Props {
 const { crumbs } = Astro.props;
 
 const fullCrumbs = [{ label: 'Accueil', href: withBase('/') }, ...crumbs];
+const currentPageUrl = new URL(Astro.url.pathname, Astro.site!).href;
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
-  itemListElement: fullCrumbs.map((c, i) => ({
-    '@type': 'ListItem',
-    position: i + 1,
-    name: c.label,
-    ...(c.href ? { item: new URL(c.href.replace(/^\//, ''), Astro.site!).href } : {}),
-  })),
+  itemListElement: fullCrumbs.map((c, i) => {
+    const isLast = i === fullCrumbs.length - 1;
+    const itemUrl = c.href
+      ? new URL(c.href.replace(/^\//, ''), Astro.site!).href
+      : isLast
+        ? currentPageUrl
+        : undefined;
+    return {
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.label,
+      ...(itemUrl ? { item: itemUrl } : {}),
+    };
+  }),
 };
 ---
 
