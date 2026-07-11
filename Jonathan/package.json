@@ -7,6 +7,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "admin": "node scripts/admin.mjs",
+    "deploy": "node scripts/deploy-ovh.mjs",
+    "build:deploy": "astro build && node scripts/deploy-ovh.mjs",
     "import:realisations": "node scripts/import-realisations.mjs",
     "build:netlify-drop": "node scripts/build-netlify-drop.mjs",
     "deploy:vercel": "node scripts/deploy-vercel.mjs"
@@ -14,5 +17,8 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",
     "astro": "^5.7.10"
+  },
+  "devDependencies": {
+    "ftp-deploy": "^2.4.7"
   }
 }

@@ -45,8 +45,8 @@ const collectionJsonLd = buildCollectionPageRealisationsJsonLd(
       <p class="overline reveal">Portfolio</p>
       <h1 class="reveal">Nos réalisations</h1>
       <p class="page-intro text-dim reveal">
-        Chaque projet est unique. Parcourez nos chantiers pour découvrir
-        l'exigence et la précision qui caractérisent notre travail.
+        Chaque projet est unique. Parcourez nos chantiers à Saint-Ambroix et dans le Gard :
+        menuiserie sur mesure, charpente, couverture et zinguerie.
       </p>
     </div>
   </section>
@@ -64,8 +64,10 @@ const collectionJsonLd = buildCollectionPageRealisationsJsonLd(
       </div>
 
       <div class="projets-grid" id="projets-grid">
-        {projets.map((p, i) => (
-          <div class="projet-wrap" data-cat={p.categorie}>
+        {projets.map((p, i) => {
+          const cats = (p as typeof p & { categories?: string[] }).categories ?? [p.categorie];
+          return (
+          <div class="projet-wrap" data-cat={p.categorie} data-cats={cats.join(',')}>
             <ProjetCard
               slug={p.slug}
               titre={p.titre}
@@ -76,7 +78,8 @@ const collectionJsonLd = buildCollectionPageRealisationsJsonLd(
               index={i}
             />
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   </section>
@@ -159,7 +162,8 @@ const collectionJsonLd = buildCollectionPageRealisationsJsonLd(
     function apply(cat: string) {
       btns.forEach((b) => b.classList.toggle('active', b.dataset.filtre === cat));
       wraps.forEach((w) => {
-        const match = cat === 'all' || w.dataset.cat === cat;
+        const cats = (w.dataset.cats || w.dataset.cat || '').split(',').filter(Boolean);
+        const match = cat === 'all' || cats.includes(cat);
         w.classList.toggle('hidden', !match);
       });
     }

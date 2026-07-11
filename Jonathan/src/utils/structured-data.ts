@@ -101,9 +101,10 @@ export function buildMetiersServiceItemListJsonLd(
       item: {
         '@type': 'Service',
         '@id': `${siteHref}#service-${m.id}`,
-        name: m.titre,
+        name: m.sousTitre ?? m.titre,
+        alternateName: m.titre,
         description: m.description,
-        serviceType: m.sousTitre ?? m.titre,
+        serviceType: m.titre,
         provider: { '@id': `${siteHref}#business` },
         url: serviceUrlForMetierId(m.id),
       },

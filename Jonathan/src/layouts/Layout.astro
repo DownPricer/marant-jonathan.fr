@@ -96,7 +96,7 @@ const showMusicPlayer =
   pathNorm === '/index.html' ||
   (Boolean(baseTrim) && (pathNorm === baseTrim || pathNorm === `${baseTrim}/index.html`));
 
-const sameAs = [site.googleAvisUrl, site.pagesJaunesUrl].filter(Boolean);
+const sameAs = [site.googleAvisUrl, site.pagesJaunesUrl, (site as typeof site & { facebookUrl?: string }).facebookUrl].filter(Boolean);
 const logoAbsUrl = new URL(withBase('/images/logo-mj.png').replace(/^\//, ''), Astro.site!).href;
 const telephoneSchema = site.telephone?.trim() ? telHrefFr(site.telephone) : '';
 

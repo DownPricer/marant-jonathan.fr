@@ -1,0 +1,75 @@
+---
+import site from '../data/site.json';
+
+type IntroAccueil = {
+  paragraphe1: string;
+  paragraphe2: string;
+  zone: string;
+  cta: string;
+};
+
+const intro = (site as typeof site & { introAccueil?: IntroAccueil }).introAccueil;
+const showIntro = Boolean(intro?.paragraphe1);
+---
+
+{showIntro && (
+<section class="section home-intro" aria-labelledby="home-intro-title">
+  <div class="container home-intro__inner reveal">
+    <p class="overline">Artisan Saint-Ambroix</p>
+    <h2 id="home-intro-title" class="home-intro__title">Votre artisan bois &amp; toiture</h2>
+    <p class="home-intro__p">{intro!.paragraphe1}</p>
+    <p class="home-intro__p">{intro!.paragraphe2}</p>
+    <ul class="home-intro__highlights" role="list">
+      <li>{intro!.zone}</li>
+      <li>{intro!.cta}</li>
+    </ul>
+  </div>
+</section>
+)}
+
+<style>
+  .home-intro {
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(
+      180deg,
+      rgba(184, 149, 106, 0.04) 0%,
+      transparent 100%
+    );
+  }
+
+  .home-intro__inner {
+    max-width: 42rem;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .home-intro__title {
+    font-size: clamp(1.45rem, 3.5vw, 2rem);
+    font-weight: 400;
+    margin-block: 0.45rem var(--space-sm);
+  }
+
+  .home-intro__p {
+    color: var(--text-dim);
+    font-size: 1rem;
+    line-height: 1.75;
+    margin-bottom: 0.85rem;
+  }
+
+  .home-intro__highlights {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-sm) 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    font-size: 0.92rem;
+    color: var(--accent-light);
+    letter-spacing: 0.04em;
+  }
+
+  .home-intro__highlights li::before {
+    content: '→ ';
+    color: var(--accent);
+  }
+</style>

@@ -233,11 +233,12 @@
   },
   {
     "slug": "toiture",
-    "titre": "Toiture",
-    "categorie": "couverture",
+    "titre": "Charpente & toiture",
+    "categorie": "charpente",
+    "categories": ["charpente", "couverture"],
     "annee": "2026",
     "lieu": "Saint-Ambroix",
-    "description": "Chantier de charpente / couverture : structure, ossature bois ou couverture, travail artisanal et suivi de bout en bout.",
+    "description": "Charpente et couverture à Saint-Ambroix : ossature bois, structure de toiture et finitions — chantier artisanal suivi de bout en bout, neuf ou rénovation.",
     "images": [
       "01.jpeg",
       "02.jpeg",
@@ -251,15 +252,16 @@
     ],
     "couverture": "01.jpeg",
     "video": null,
-    "vedette": false
+    "vedette": true
   },
   {
     "slug": "toiture-bac-acier",
-    "titre": "Toiture bac acier",
-    "categorie": "couverture",
+    "titre": "Charpente & toiture bac acier",
+    "categorie": "charpente",
+    "categories": ["charpente", "couverture"],
     "annee": "2026",
     "lieu": "Saint-Ambroix",
-    "description": "Chantier de charpente / couverture : structure, ossature bois ou couverture, travail artisanal et suivi de bout en bout.",
+    "description": "Charpente bois et couverture bac acier à Saint-Ambroix : ossature, pose de couverture et finitions soignées pour une toiture durable.",
     "images": [
       "01.jpeg",
       "02.jpeg",

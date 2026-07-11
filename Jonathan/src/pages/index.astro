@@ -2,6 +2,7 @@
 import { withBase } from '../utils/base';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
+import HomeIntro from '../components/HomeIntro.astro';
 import MetierSection from '../components/MetierSection.astro';
 import ProjetCard from '../components/ProjetCard.astro';
 import ContactForm from '../components/ContactForm.astro';
@@ -39,14 +40,17 @@ const heroPreloadHref = new URL(
 
 <Layout
   title="Accueil"
-  fullTitle="Marant Jonathan — menuisier, charpentier, ebeniste, couvreur & zingueur à Saint-Ambroix (Gard)"
-  description="Marant Jonathan — menuiserie, ébénisterie, charpente, zinguerie et couverture à Saint-Ambroix. Savoir-faire artisanal pour particuliers et professionnels."
-  ogImageAlt="Marant Jonathan — menuiserie, charpente, zinguerie et couverture à Saint-Ambroix (Gard)"
+  fullTitle="Artisan Saint-Ambroix — menuisier, charpentier, couvreur & zingueur | Marant Jonathan"
+  description="Artisan à Saint-Ambroix : menuiserie sur mesure, charpente bois, couverture et zinguerie. Rénovation et neuf — devis gratuit dans le Gard et les Cévennes."
+  keywords="artisan Saint-Ambroix, menuiserie Saint-Ambroix, charpentier Saint-Ambroix, couvreur Saint-Ambroix, rénovation toiture Gard, devis menuiserie Saint-Ambroix"
+  ogImageAlt="Artisan Saint-Ambroix — menuiserie, charpente, couverture et zinguerie | Marant Jonathan"
   extraJsonLd={extraHomeJsonLd}
   preloadImageHref={heroPreloadHref}
   introSplash
 >
   <Hero />
+
+  <HomeIntro />
 
   <MetierSection />
 
@@ -64,7 +68,8 @@ const heroPreloadHref = new URL(
           <span class="portfolio-title-text">Réalisations récentes</span>
         </h2>
         <p class="portfolio-lead">
-          Découvrez une sélection de nos chantiers.
+          Découvrez une sélection de chantiers réalisés à Saint-Ambroix et dans le Gard :
+          menuiserie sur mesure, charpente, couverture et zinguerie.
         </p>
       </div>
       <span class="portfolio-rule" aria-hidden="true"></span>

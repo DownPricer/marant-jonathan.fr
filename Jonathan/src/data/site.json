@@ -2,10 +2,18 @@
   "nom": "Marant Jonathan",
   "nomListing": "Marant Jonathan",
   "marque": "Marant Jonathan Menuiserie",
-  "titre": "Artisan menuisier, charpentier, ebeniste, couvreur & zingueur",
+  "titre": "Artisan menuisier, charpentier, ebeniste, couvreur & zingueur à Saint-Ambroix",
   "sousTitre": "Menuisier · Charpentier · Ebeniste - Couvreur - Zingueur",
-  "baseline": "Savoir-faire traditionnel, réalisations sur mesure pour particuliers et professionnels.",
+  "baseline": "Artisan basé à Saint-Ambroix, réalisations sur mesure pour particuliers et professionnels.",
+  "introAccueil": {
+    "paragraphe1": "Artisan basé à Saint-Ambroix, j'interviens pour vos travaux de menuiserie, charpente, couverture et zinguerie.",
+    "paragraphe2": "Spécialisé dans les réalisations sur mesure, je vous accompagne dans tous vos projets, du mobilier aux travaux de toiture — neuf comme rénovation.",
+    "zone": "Intervention à Saint-Ambroix et dans les alentours (Gard, Cévennes)",
+    "cta": "Devis gratuit et conseils personnalisés"
+  },
   "motsCles": [
+    "artisan Saint-Ambroix",
+    "menuiserie Saint-Ambroix",
     "menuisier Saint-Ambroix",
     "menuiserie sur mesure Gard",
     "menuiserie bois",
@@ -36,6 +44,7 @@
   "telephone": "06 99 51 93 59",
   "email": "contact@marant.jonathan.fr",
   "googleAvisUrl": "https://maps.app.goo.gl/T1vfAJSCJmvrcEgL8",
+  "facebookUrl": "https://www.facebook.com/share/18sXifKFCG/",
   "telephoneHint": "Numéro affiché sur la fiche Pages Jaunes ou communiqué sur demande.",
   "emailHint": "Écrivez-nous via le formulaire ci-dessous.",
   "adresse": {
@@ -69,17 +78,17 @@
     {
       "id": "menuiserie",
       "titre": "Menuisier",
-      "sousTitre": "Agencements & menuiseries bois sur mesure",
-      "description": "Portes, fenêtres, escaliers, habillages et agencements intérieurs. Chaque pièce est conçue et fabriquée à la main, au plus près de vos envies et de votre espace de vie.",
-      "alt": "Menuisier à Saint-Ambroix — travail du bois sur mesure",
+      "sousTitre": "Menuiserie sur mesure à Saint-Ambroix",
+      "description": "Je réalise vos meubles et aménagements sur mesure à Saint-Ambroix, en bois massif, adaptés à votre intérieur et à vos besoins. Portes, escaliers, habillages : chaque projet allie esthétique, solidité et durabilité.",
+      "alt": "Menuiserie Saint-Ambroix — menuisier artisan, travail du bois sur mesure",
       "image": "/images/metiers/menuiserie.svg"
     },
     {
       "id": "charpente",
       "titre": "Charpentier",
-      "sousTitre": "Structures bois & ossatures de toiture",
-      "description": "Charpentes traditionnelles, fermettes, carports et ossatures bois — neuf ou rénovation. Des assemblages robustes, taillés avec soin pour durer plusieurs générations.",
-      "alt": "Charpentier dans le Gard — charpente bois traditionnelle",
+      "sousTitre": "Charpente bois à Saint-Ambroix",
+      "description": "Charpentier à Saint-Ambroix : charpentes traditionnelles, fermettes, carports et ossatures bois — neuf ou rénovation. Des assemblages robustes, taillés avec soin pour durer plusieurs générations.",
+      "alt": "Charpente Saint-Ambroix — charpentier artisan, ossature bois traditionnelle",
       "image": "/images/metiers/charpente.svg"
     },
     {
@@ -93,9 +102,9 @@
     {
       "id": "couverture",
       "titre": "Couvreur",
-      "sousTitre": "Pose & rénovation de toiture pour votre maison",
-      "description": "Tuiles canal, bac acier : pose, réparation et entretien de toitures. Un diagnostic précis et des finitions soignées pour protéger votre habitation sur le long terme.",
-      "alt": "Couvreur dans le Gard — rénovation de toiture et couverture",
+      "sousTitre": "Couvreur à Saint-Ambroix — rénovation de toiture",
+      "description": "Couvreur à Saint-Ambroix : tuiles canal, bac acier — pose, réparation et rénovation de toitures. Un diagnostic précis et des finitions soignées pour protéger votre habitation sur le long terme.",
+      "alt": "Couvreur Saint-Ambroix — couverture et rénovation de toiture dans le Gard",
       "image": "/images/metiers/couverture.svg"
     },
     {
