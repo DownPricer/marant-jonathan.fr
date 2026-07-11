@@ -12,6 +12,7 @@ const googleAvisUrl =
 const metiers = site.metiers as { id: string; titre: string }[];
 const politiqueHref = withBase('/politique-confidentialite/');
 const emailTo = site.email ?? '';
+const siteHostname = new URL(Astro.site!).hostname;
 ---
 
 <section class="section contact-section" id="contact">
@@ -343,7 +344,7 @@ const emailTo = site.email ?? '';
   </div>
 </section>
 
-<script>
+<script define:vars={{ siteHostname }}>
   (function () {
     const form = document.getElementById('contact-devis-form');
     if (!form || !(form instanceof HTMLFormElement)) return;
@@ -487,7 +488,7 @@ const emailTo = site.email ?? '';
         message,
         '',
         '—',
-        'Message généré depuis jonathan-artisan.fr (formulaire de contact)',
+        `Message généré depuis ${siteHostname} (formulaire de contact)`,
       ].join('\n');
 
       const max = 1800;

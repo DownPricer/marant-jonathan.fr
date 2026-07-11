@@ -21,7 +21,7 @@ Depuis le projet :
 
 ```bash
 npm install
-SITE_URL=https://votre-domaine.fr npm run build
+SITE_URL=https://marant-jonathan.fr npm run build
 ```
 
 Le site genere les fichiers statiques dans :

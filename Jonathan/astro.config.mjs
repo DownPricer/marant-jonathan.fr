@@ -7,7 +7,8 @@ import sitemap from '@astrojs/sitemap';
 /** Déposez tout le dossier du projet sur Netlify : voir _redirects à la racine + npm run build:netlify-drop */
 const netlifyDrop = process.env.NETLIFY_DROP === '1';
 
-const siteOrigin = 'https://jonathan-artisan.fr';
+/** URL publique du site (canonical, sitemap, JSON-LD). Surcharge : SITE_URL=https://… npm run build */
+const siteOrigin = (process.env.SITE_URL || 'https://marant-jonathan.fr').replace(/\/$/, '');
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projets = JSON.parse(readFileSync(join(__dirname, 'src', 'data', 'projets.json'), 'utf8'));
