@@ -7,7 +7,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "admin": "node scripts/admin.mjs",
+    "start": "node scripts/validate-env.mjs && node dist/server/entry.mjs",
+    "test:admin": "node scripts/test-admin-full.mjs",
     "deploy": "node scripts/deploy-ovh.mjs",
     "build:deploy": "astro build && node scripts/deploy-ovh.mjs",
     "import:realisations": "node scripts/import-realisations.mjs",
@@ -15,7 +16,7 @@
     "deploy:vercel": "node scripts/deploy-vercel.mjs"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.7.2",
+    "@astrojs/node": "^9.1.0",
     "astro": "^5.7.10"
   },
   "devDependencies": {

@@ -1,8 +1,8 @@
 ---
+const site = Astro.locals.site;
 /**
  * Plein écran au chargement de l'accueil uniquement (voir Layout `introSplash`).
  */
-import site from '../data/site.json';
 import { withBase, withCacheBust } from '../utils/base';
 import { metiersLabelsFromSousTitre } from '../utils/metiers';
 const nomParts = site.nom.trim().split(/\s+/);

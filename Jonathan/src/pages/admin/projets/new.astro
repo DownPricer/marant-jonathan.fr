@@ -1,0 +1,63 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import CsrfField from '../../../components/admin/CsrfField.astro';
+import { VALID_CATEGORIES } from '../../../types/content';
+
+export const prerender = false;
+---
+
+<AdminLayout title="Nouveau projet" active="projets">
+  <div class="edit-header"><a href="/admin/projets" class="back-link">← Retour aux projets</a></div>
+  <form method="post" action="/api/admin/projets">
+    <CsrfField />
+    <input type="hidden" name="action" value="create" />
+    <div class="card">
+      <div class="card-title">Informations</div>
+      <div class="field"><label>Titre</label><input type="text" name="titre" required /></div>
+      <div class="field"><label>Slug (URL)</label><input type="text" name="slug" placeholder="mon-projet" required /></div>
+      <div class="field"><label>Description (SEO)</label><textarea name="description" rows={4}></textarea></div>
+      <div class="g2">
+        <div class="field">
+          <label>Catégorie principale</label>
+          <select name="categorie">
+            {VALID_CATEGORIES.map((c) => <option value={c}>{c}</option>)}
+          </select>
+        </div>
+        <div class="field"><label>Lieu</label><input type="text" name="lieu" /></div>
+      </div>
+      <div class="g2">
+        <div class="field"><label>Année</label><input type="text" name="annee" /></div>
+        <div class="field"><label>Image de couverture</label><input type="text" name="couverture" value="01.jpeg" /></div>
+      </div>
+      <div class="field">
+        <label>Catégories multiples (cases cochées)</label>
+        <div class="cat-checks">
+          {VALID_CATEGORIES.map((c) => (
+            <label><input type="checkbox" name="cat_" value={c} /> {c}</label>
+          ))}
+        </div>
+        <input type="hidden" name="categories" id="categories-hidden" value="" />
+      </div>
+      <div class="field">
+        <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer">
+          <input type="checkbox" name="vedette" value="1" /> Mettre en vedette (accueil)
+        </label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Images (une par ligne)</div>
+      <textarea name="images" rows={4} placeholder="01.jpeg"></textarea>
+    </div>
+    <button type="submit" class="btn btn-ok">💾 Créer le projet</button>
+  </form>
+</AdminLayout>
+
+<script>
+  const form = document.querySelector('form');
+  form?.addEventListener('submit', () => {
+    const checked = [...document.querySelectorAll('input[name=cat_]:checked')].map((el) => (el as HTMLInputElement).value);
+    const main = (document.querySelector('[name=categorie]') as HTMLSelectElement)?.value;
+    const hidden = document.getElementById('categories-hidden') as HTMLInputElement;
+    if (hidden) hidden.value = (checked.length ? checked : [main]).join(',');
+  });
+</script>

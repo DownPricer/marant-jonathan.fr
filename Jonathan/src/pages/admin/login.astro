@@ -1,0 +1,23 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+export const prerender = false;
+const err = Astro.url.searchParams.get('err');
+---
+
+<AdminLayout title="Connexion" login>
+  <div class="login-wrap">
+    <div class="login-box">
+      <h1>ADMINISTRATION</h1>
+      <p>Marant Jonathan — Site artisan</p>
+      {err && <div class="alert err">{err}</div>}
+      <form method="post" action="/api/admin/login">
+        <div class="field">
+          <label for="password">Mot de passe</label>
+          <input type="password" id="password" name="password" autofocus required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn" style="width:100%;justify-content:center;margin-top:0.5rem">Accéder →</button>
+      </form>
+    </div>
+  </div>
+</AdminLayout>

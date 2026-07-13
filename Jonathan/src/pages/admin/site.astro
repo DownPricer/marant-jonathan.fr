@@ -1,0 +1,52 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import CsrfField from '../../components/admin/CsrfField.astro';
+
+export const prerender = false;
+const s = Astro.locals.site;
+---
+
+<AdminLayout title="Infos générales" active="site">
+  <form method="post" action="/api/admin/site">
+    <CsrfField />
+    <div class="card">
+      <div class="card-title">Identité</div>
+      <div class="g2">
+        <div class="field"><label>Nom complet</label><input type="text" name="nom" value={s.nom} required /></div>
+        <div class="field"><label>Marque</label><input type="text" name="marque" value={s.marque} /></div>
+      </div>
+      <div class="field"><label>Titre SEO (balise title)</label><input type="text" name="titre" value={s.titre} /></div>
+      <div class="field"><label>Sous-titre (en-tête)</label><input type="text" name="sousTitre" value={s.sousTitre} /></div>
+      <div class="field"><label>Baseline (accueil)</label><input type="text" name="baseline" value={s.baseline} /></div>
+      <div class="field"><label>Zone d'intervention</label><input type="text" name="zone" value={s.zone} /></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Contact</div>
+      <div class="g2">
+        <div class="field"><label>Téléphone</label><input type="tel" name="telephone" value={s.telephone} /></div>
+        <div class="field"><label>Email</label><input type="email" name="email" value={s.email} /></div>
+      </div>
+      <div class="g2">
+        <div class="field"><label>Adresse (rue)</label><input type="text" name="adresse_rue" value={s.adresse?.rue || ''} /></div>
+        <div class="field"><label>Code postal</label><input type="text" name="adresse_cp" value={s.adresse?.codePostal || ''} /></div>
+      </div>
+      <div class="g2">
+        <div class="field"><label>Ville</label><input type="text" name="adresse_ville" value={s.adresse?.ville || ''} /></div>
+        <div class="field"><label>Horaires</label><input type="text" name="horaires" value={s.horaires} /></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Liens externes</div>
+      <div class="field"><label>Facebook (URL)</label><input type="url" name="facebookUrl" value={s.facebookUrl || ''} /></div>
+      <div class="field"><label>Google Avis (URL)</label><input type="url" name="googleAvisUrl" value={s.googleAvisUrl || ''} /></div>
+      <div class="field"><label>Pages Jaunes (URL)</label><input type="url" name="pagesJaunesUrl" value={s.pagesJaunesUrl || ''} /></div>
+    </div>
+    <div class="card">
+      <div class="card-title">SEO — mots-clés (un par ligne)</div>
+      <div class="field">
+        <textarea name="motsCles" rows={8}>{(s.motsCles || []).join('\n')}</textarea>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-ok">💾 Enregistrer</button>
+  </form>
+</AdminLayout>

@@ -2,18 +2,20 @@
 import Layout from '../../layouts/Layout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import Lightbox from '../../components/Lightbox.astro';
-import projets from '../../data/projets.json';
-import site from '../../data/site.json';
 import { withBase } from '../../utils/base';
 import { labelCategorie } from '../../utils/categories';
 import { buildImageGalleryJsonLd } from '../../utils/structured-data';
 
-export function getStaticPaths() {
-  return projets.map((p) => ({ params: { slug: p.slug } }));
-}
+export const prerender = false;
+
+const site = Astro.locals.site;
+const projets = Astro.locals.projets;
 
 const { slug } = Astro.params;
-const projet = projets.find((p) => p.slug === slug)!;
+const projet = projets.find((p) => p.slug === slug);
+if (!projet) {
+  return Astro.redirect('/realisations');
+}
 const media = (file: string) => withBase(`/images/projets/${projet.slug}/${file.replace(/\.(jpe?g|png)$/i, '.webp')}`);
 const mediaOrig = (file: string) => withBase(`/images/projets/${projet.slug}/${file}`);
 const categorieLabel = labelCategorie(projet.categorie);

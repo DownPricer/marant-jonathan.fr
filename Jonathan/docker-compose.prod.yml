@@ -1,0 +1,30 @@
+services:
+  marant-jonathan-site:
+    container_name: marant-jonathan-site
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - HOST=0.0.0.0
+      - PORT=4321
+      - DATA_DIR=/data
+      - SITE_URL=https://marant-jonathan.fr
+      - TRUST_PROXY=true
+    volumes:
+      - marant-jonathan-data:/data
+    networks:
+      - downpricer_downpricer-network
+    ports:
+      - "127.0.0.1:4321:4321"
+
+volumes:
+  marant-jonathan-data:
+    name: marant-jonathan-data
+
+networks:
+  downpricer_downpricer-network:
+    external: true

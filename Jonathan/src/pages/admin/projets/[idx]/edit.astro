@@ -1,0 +1,119 @@
+---
+import AdminLayout from '../../../../layouts/AdminLayout.astro';
+import CsrfField from '../../../../components/admin/CsrfField.astro';
+import { VALID_CATEGORIES } from '../../../../types/content';
+import { listProjetImages } from '../../../../server/images';
+
+export const prerender = false;
+
+const idx = parseInt(Astro.params.idx || '-1', 10);
+const ps = Astro.locals.projets;
+const p = ps[idx];
+
+if (!p) {
+  return Astro.redirect('/admin/projets');
+}
+
+const cats = p.categories?.length ? p.categories : [p.categorie];
+const images = listProjetImages(p.slug);
+---
+
+<AdminLayout title={`Projet : ${p.titre}`} active="projets">
+  <div class="edit-header"><a href="/admin/projets" class="back-link">← Retour aux projets</a></div>
+
+  <form method="post" action="/api/admin/projets">
+    <CsrfField />
+    <input type="hidden" name="action" value="save" />
+    <input type="hidden" name="idx" value={idx} />
+    <div class="card">
+      <div class="card-title">Informations</div>
+      <div class="field"><label>Titre</label><input type="text" name="titre" value={p.titre} required /></div>
+      <div class="field"><label>Slug (URL)</label><input type="text" name="slug" value={p.slug} required /></div>
+      <div class="field"><label>Description (SEO)</label><textarea name="description" rows={4}>{p.description}</textarea></div>
+      <div class="g2">
+        <div class="field">
+          <label>Catégorie principale</label>
+          <select name="categorie">
+            {VALID_CATEGORIES.map((c) => (
+              <option value={c} selected={p.categorie === c}>{c}</option>
+            ))}
+          </select>
+        </div>
+        <div class="field"><label>Lieu</label><input type="text" name="lieu" value={p.lieu || ''} /></div>
+      </div>
+      <div class="g2">
+        <div class="field"><label>Année</label><input type="text" name="annee" value={p.annee || ''} /></div>
+        <div class="field"><label>Image de couverture</label><input type="text" name="couverture" value={p.couverture || ''} list="img-list" /></div>
+      </div>
+      <div class="field">
+        <label>Catégories multiples</label>
+        <div class="cat-checks">
+          {VALID_CATEGORIES.map((c) => (
+            <label>
+              <input type="checkbox" name="cat_" value={c} checked={cats.includes(c)} /> {c}
+            </label>
+          ))}
+        </div>
+        <input type="hidden" name="categories" id="categories-hidden" value={cats.join(',')} />
+      </div>
+      <div class="field">
+        <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer">
+          <input type="checkbox" name="vedette" value="1" checked={p.vedette} /> Mettre en vedette (accueil)
+        </label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Images du projet</div>
+      <datalist id="img-list">
+        {images.map((img) => <option value={img} />)}
+      </datalist>
+      <div class="field">
+        <label>Fichiers (un par ligne)</label>
+        <textarea name="images" rows={Math.max(4, p.images.length + 2)}>{p.images.join('\n')}</textarea>
+      </div>
+      {images.length > 0 && (
+        <div class="img-grid">
+          {images.map((img) => (
+            <img src={`/images/projets/${p.slug}/${img}`} alt={img} class="img-thumb" loading="lazy" />
+          ))}
+        </div>
+      )}
+    </div>
+
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center">
+      <button type="submit" class="btn btn-ok">💾 Enregistrer</button>
+      <a href="/admin/projets" class="btn btn-sm">Annuler</a>
+    </div>
+  </form>
+
+  <div class="card" style="margin-top:1.25rem">
+    <div class="card-title">Téléverser une image</div>
+    <form method="post" action="/api/admin/upload" enctype="multipart/form-data">
+      <CsrfField />
+      <input type="hidden" name="slug" value={p.slug} />
+      <input type="hidden" name="return" value={`/admin/projets/${idx}/edit`} />
+      <div class="field">
+        <label>Fichier (JPEG, PNG, WebP — max {process.env.MAX_UPLOAD_MB || '10'} Mo)</label>
+        <input type="file" name="file" accept="image/jpeg,image/png,image/webp" required />
+      </div>
+      <button type="submit" class="btn">📤 Téléverser</button>
+    </form>
+  </div>
+
+  <form method="post" action="/api/admin/projets" style="margin-top:1.5rem" onsubmit="return confirm('Supprimer définitivement ce projet ?')">
+    <CsrfField />
+    <input type="hidden" name="action" value="delete" />
+    <input type="hidden" name="slug" value={p.slug} />
+    <button type="submit" class="btn btn-danger">🗑 Supprimer le projet</button>
+  </form>
+</AdminLayout>
+
+<script>
+  document.querySelector('form[action="/api/admin/projets"]')?.addEventListener('submit', () => {
+    const checked = [...document.querySelectorAll('input[name=cat_]:checked')].map((el) => (el as HTMLInputElement).value);
+    const main = (document.querySelector('[name=categorie]') as HTMLSelectElement)?.value;
+    const hidden = document.getElementById('categories-hidden') as HTMLInputElement;
+    if (hidden) hidden.value = (checked.length ? checked : [main]).join(',');
+  });
+</script>

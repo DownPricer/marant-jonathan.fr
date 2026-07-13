@@ -1,7 +1,7 @@
 ---
+const site = Astro.locals.site;
 import Layout from '../layouts/Layout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
-import site from '../data/site.json';
 
 const adresseComplete = `${site.adresse.rue}, ${site.adresse.codePostal} ${site.adresse.ville}, France`;
 const nomLegal = site.juridique?.denomination ?? site.nom;

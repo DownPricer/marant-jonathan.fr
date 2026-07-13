@@ -1,0 +1,55 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import CsrfField from '../../../components/admin/CsrfField.astro';
+
+export const prerender = false;
+const ps = Astro.locals.projets;
+const BADGE: Record<string, string> = {
+  menuiserie: 'bm', charpente: 'bc', ebenisterie: 'be', couverture: 'bco', zinguerie: 'bz',
+};
+---
+
+<AdminLayout title="Projets" active="projets">
+  <p style="margin-bottom:1rem">
+    <a href="/admin/projets/new" class="btn">➕ Nouveau projet</a>
+  </p>
+  <div class="card" style="padding:0;overflow:hidden">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Titre</th><th>Catégorie</th><th>Lieu / Année</th><th>★</th><th></th></tr>
+      </thead>
+      <tbody>
+        {ps.map((p, i) => (
+          <tr>
+            <td>{i + 1}</td>
+            <td>{p.titre}</td>
+            <td><span class={`badge ${BADGE[p.categorie] || ''}`}>{p.categorie}</span></td>
+            <td>{p.lieu} {p.annee}</td>
+            <td>{p.vedette ? '⭐' : ''}</td>
+            <td style="display:flex;gap:0.35rem;flex-wrap:wrap">
+              <a href={`/admin/projets/${i}/edit`} class="btn btn-sm">Modifier</a>
+              {i > 0 && (
+                <form method="post" action="/api/admin/projets" style="display:inline">
+                  <CsrfField />
+                  <input type="hidden" name="action" value="reorder" />
+                  <input type="hidden" name="slug" value={p.slug} />
+                  <input type="hidden" name="dir" value="up" />
+                  <button type="submit" class="btn btn-sm">↑</button>
+                </form>
+              )}
+              {i < ps.length - 1 && (
+                <form method="post" action="/api/admin/projets" style="display:inline">
+                  <CsrfField />
+                  <input type="hidden" name="action" value="reorder" />
+                  <input type="hidden" name="slug" value={p.slug} />
+                  <input type="hidden" name="dir" value="down" />
+                  <button type="submit" class="btn btn-sm">↓</button>
+                </form>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</AdminLayout>

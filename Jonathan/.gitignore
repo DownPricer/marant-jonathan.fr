@@ -1,6 +1,11 @@
 node_modules/
 dist/
 .astro/
+data/
+data-test/
+body.txt
+cookies.txt
+docker-cookies.txt
 .DS_Store
 Thumbs.db
 .vercel

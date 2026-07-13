@@ -1,0 +1,148 @@
+---
+import CsrfField from '../components/admin/CsrfField.astro';
+
+interface Props {
+  title: string;
+  active?: string;
+  login?: boolean;
+}
+
+const { title, active = '', login = false } = Astro.props;
+const ok = Astro.url.searchParams.get('ok');
+const err = Astro.url.searchParams.get('err');
+
+const links = [
+  ['site', '⚙️ Infos générales', '/admin/site'],
+  ['intro', '🏠 Texte accueil', '/admin/intro'],
+  ['metiers', '🔨 Services', '/admin/metiers'],
+  ['apropos', '👤 À propos', '/admin/apropos'],
+  ['faq', '❓ FAQ', '/admin/faq'],
+  ['avis', '⭐ Avis clients', '/admin/avis'],
+  ['projets', '📁 Projets', '/admin/projets'],
+];
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title} — Admin</title>
+  </head>
+  <body class:list={[{ 'login-body': login }]}>
+    {!login && (
+      <aside class="sb">
+        <div class="sb-top">
+          <h1>MARANT JONATHAN</h1>
+          <p>Administration du site</p>
+        </div>
+        <nav>
+          {links.map(([id, label, href]) => (
+            <a href={href} class:list={[{ on: active === id }]}>{label}</a>
+          ))}
+        </nav>
+        <div class="sb-foot">
+          <form method="post" action="/api/admin/logout" style="display:inline">
+            <CsrfField />
+            <button type="submit" class="logout-btn">⏎ Déconnexion</button>
+          </form>
+          <a href="/" target="_blank" rel="noopener">↗ Voir le site</a>
+        </div>
+      </aside>
+    )}
+    {!login ? (
+      <main class="main">
+        <div class="mh"><h2>{title}</h2></div>
+        {err && <div class="alert err">{err}</div>}
+        {ok && <div class="alert ok">✓ {ok}</div>}
+        <slot />
+      </main>
+    ) : (
+      <slot />
+    )}
+  </body>
+</html>
+
+<style is:global>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d0d0d; --surf: #111; --surf2: #161616; --border: #222;
+    --accent: #c9a96e; --accent-h: #e0c08e; --text: #e8e2d9; --dim: #888; --dim2: #555;
+  }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100vh; display: flex;
+  }
+  body.login-body { display: block; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-h); }
+  .sb {
+    width: 210px; min-height: 100vh; background: var(--surf);
+    border-right: 1px solid var(--border); display: flex; flex-direction: column;
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 10;
+  }
+  .sb-top { padding: 1.25rem 1rem 0.75rem; border-bottom: 1px solid var(--border); }
+  .sb-top h1 { font-size: 0.9rem; font-weight: 700; color: var(--accent); letter-spacing: 0.06em; }
+  .sb-top p { font-size: 0.68rem; color: var(--dim2); margin-top: 0.2rem; }
+  .sb nav { flex: 1; padding: 0.5rem 0; }
+  .sb nav a {
+    display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1rem;
+    font-size: 0.78rem; color: var(--dim); border-left: 2px solid transparent;
+  }
+  .sb nav a:hover, .sb nav a.on { background: var(--surf2); color: var(--accent); border-left-color: var(--accent); }
+  .sb-foot { padding: 0.75rem 1rem; border-top: 1px solid var(--border); font-size: 0.72rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .logout-btn { background: none; border: none; color: var(--dim2); cursor: pointer; font: inherit; padding: 0; text-align: left; }
+  .logout-btn:hover { color: var(--accent); }
+  .main { margin-left: 210px; flex: 1; min-width: 0; padding: 2rem 2.5rem; }
+  .mh { margin-bottom: 1.75rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+  .mh h2 { font-size: 1.25rem; font-weight: 400; }
+  .card { background: var(--surf); border: 1px solid var(--border); border-radius: 6px; padding: 1.4rem; margin-bottom: 1.25rem; }
+  .card-title { font-size: 0.72rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 1rem; }
+  .field { margin-bottom: 0.9rem; }
+  .field label { display: block; font-size: 0.72rem; color: var(--dim); margin-bottom: 0.28rem; }
+  input[type=text], input[type=email], input[type=tel], input[type=url], input[type=password], input[type=number], textarea, select {
+    width: 100%; padding: 0.5rem 0.7rem; background: #0a0a0a; border: 1px solid #2a2a2a;
+    color: var(--text); border-radius: 4px; font-size: 0.82rem; font-family: inherit;
+  }
+  input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
+  textarea { resize: vertical; line-height: 1.55; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.48rem 1.1rem;
+    border: 1px solid var(--accent); background: transparent; color: var(--accent);
+    border-radius: 4px; font-size: 0.76rem; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .btn:hover { background: var(--accent); color: #0a0a0a; }
+  .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.7rem; }
+  .btn-danger { border-color: #c95555; color: #c95555; }
+  .btn-danger:hover { background: #c95555; color: #fff; }
+  .btn-ok { border-color: #5ab55a; color: #5ab55a; }
+  .btn-ok:hover { background: #5ab55a; color: #0a0a0a; }
+  .alert { padding: 0.65rem 1rem; border-radius: 4px; margin-bottom: 1.25rem; font-size: 0.8rem; }
+  .ok { background: #0c1d0c; border: 1px solid #2a5a2a; color: #6ec96e; }
+  .err { background: #1d0c0c; border: 1px solid #5a2a2a; color: #c96e6e; }
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 720px) { .g2 { grid-template-columns: 1fr; } .main { padding: 1.25rem; margin-left: 0; } .sb { position: static; width: 100%; min-height: auto; } body { flex-direction: column; } }
+  .mb { border: 1px solid var(--border); border-radius: 5px; padding: 1rem; margin-bottom: 0.85rem; }
+  .mb h4 { font-size: 0.72rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; }
+  .faq-row, .avis-row { border: 1px solid var(--border); border-radius: 5px; padding: 0.9rem; margin-bottom: 0.6rem; }
+  .faq-row-n { font-size: 0.68rem; color: var(--dim2); margin-bottom: 0.4rem; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 0.68rem; color: var(--dim2); text-transform: uppercase; padding: 0.45rem 0.65rem; border-bottom: 1px solid var(--border); }
+  td { padding: 0.55rem 0.65rem; border-bottom: 1px solid #1a1a1a; font-size: 0.8rem; vertical-align: middle; }
+  tr:hover td { background: var(--surf2); }
+  .badge { display: inline-block; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.65rem; text-transform: uppercase; }
+  .bm { background: #1a2a1a; color: #6ec96e; } .bc { background: #2a1a0d; color: #c9966e; }
+  .be { background: #2a2a0d; color: #c9c96e; } .bco { background: #0d1a2a; color: #6e9ec9; }
+  .bz { background: #2a0d2a; color: #c96ec9; }
+  .edit-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+  .back-link { font-size: 0.78rem; color: var(--dim); }
+  .login-wrap { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--bg); }
+  .login-box { background: var(--surf); border: 1px solid var(--border); border-radius: 8px; padding: 2.5rem; width: min(320px, 92vw); }
+  .login-box h1 { font-size: 1rem; font-weight: 600; color: var(--accent); text-align: center; margin-bottom: 0.35rem; }
+  .login-box p { font-size: 0.75rem; color: var(--dim2); text-align: center; margin-bottom: 1.5rem; }
+  .img-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+  .img-thumb { width: 72px; height: 72px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border); }
+  .cat-checks { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .cat-checks label { display: flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; cursor: pointer; }
+</style>

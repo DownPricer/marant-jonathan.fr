@@ -1,0 +1,26 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import CsrfField from '../../components/admin/CsrfField.astro';
+
+export const prerender = false;
+const s = Astro.locals.site;
+const metierColor: Record<string, string> = {
+  menuiserie: '#6ec96e', charpente: '#c9966e', ebenisterie: '#c9c96e',
+  couverture: '#6e9ec9', zinguerie: '#c96ec9',
+};
+---
+
+<AdminLayout title="Services" active="metiers">
+  <form method="post" action="/api/admin/metiers">
+    <CsrfField />
+    {s.metiers.map((m, i) => (
+      <div class="mb" style={`border-color:${metierColor[m.id] || '#333'}22`}>
+        <h4 style={`color:${metierColor[m.id] || 'var(--accent)'}`}>{m.titre} ({m.id})</h4>
+        <div class="field"><label>Sous-titre affiché</label><input type="text" name={`metier_${i}_sousTitre`} value={m.sousTitre || ''} /></div>
+        <div class="field"><label>Description</label><textarea name={`metier_${i}_description`} rows={4}>{m.description}</textarea></div>
+        <div class="field"><label>Alt image (SEO)</label><input type="text" name={`metier_${i}_alt`} value={m.alt || ''} /></div>
+      </div>
+    ))}
+    <button type="submit" class="btn btn-ok">💾 Enregistrer</button>
+  </form>
+</AdminLayout>

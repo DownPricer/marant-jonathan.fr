@@ -1,8 +1,8 @@
 ---
+const site = Astro.locals.site;
 import Layout from '../layouts/Layout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import ContactForm from '../components/ContactForm.astro';
-import site from '../data/site.json';
 import { buildHowToJsonLd } from '../utils/structured-data';
 
 type HowToDevis = {

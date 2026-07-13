@@ -1,9 +1,9 @@
 ---
+const site = Astro.locals.site;
+const projets = Astro.locals.projets;
 import Layout from '../../layouts/Layout.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import ProjetCard from '../../components/ProjetCard.astro';
-import projets from '../../data/projets.json';
-import site from '../../data/site.json';
 import { withBase } from '../../utils/base';
 import {
   buildCollectionPageRealisationsJsonLd,

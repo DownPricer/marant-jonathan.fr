@@ -1,7 +1,7 @@
 ---
+const site = Astro.locals.site;
 import Layout from '../layouts/Layout.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
-import site from '../data/site.json';
 import { withBase } from '../utils/base';
 
 const nomParts = site.nom.trim().split(/\s+/);

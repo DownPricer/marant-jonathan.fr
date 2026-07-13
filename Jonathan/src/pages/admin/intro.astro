@@ -1,0 +1,28 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import CsrfField from '../../components/admin/CsrfField.astro';
+
+export const prerender = false;
+const s = Astro.locals.site;
+const i = s.introAccueil || { paragraphe1: '', paragraphe2: '', zone: '', cta: '' };
+---
+
+<AdminLayout title="Texte d'accueil" active="intro">
+  <form method="post" action="/api/admin/intro">
+    <CsrfField />
+    <div class="card">
+      <div class="card-title">Hero (bannière principale)</div>
+      <div class="field"><label>Titre SEO / hero</label><input type="text" name="titre" value={s.titre} /></div>
+      <div class="field"><label>Sous-titre</label><input type="text" name="sousTitre" value={s.sousTitre} /></div>
+      <div class="field"><label>Baseline</label><input type="text" name="baseline" value={s.baseline} /></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Bloc d'introduction (sous le hero)</div>
+      <div class="field"><label>Paragraphe 1</label><textarea name="p1" rows={3}>{i.paragraphe1}</textarea></div>
+      <div class="field"><label>Paragraphe 2</label><textarea name="p2" rows={3}>{i.paragraphe2}</textarea></div>
+      <div class="field"><label>Zone d'intervention (phrase courte)</label><input type="text" name="zone" value={i.zone} /></div>
+      <div class="field"><label>Appel à l'action</label><input type="text" name="cta" value={i.cta} /></div>
+    </div>
+    <button type="submit" class="btn btn-ok">💾 Enregistrer</button>
+  </form>
+</AdminLayout>

@@ -1,4 +1,6 @@
 ---
+const site = Astro.locals.site;
+const projets = Astro.locals.projets;
 import { withBase } from '../utils/base';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
@@ -7,8 +9,6 @@ import MetierSection from '../components/MetierSection.astro';
 import ProjetCard from '../components/ProjetCard.astro';
 import ContactForm from '../components/ContactForm.astro';
 import AvisSection from '../components/AvisSection.astro';
-import projets from '../data/projets.json';
-import site from '../data/site.json';
 import { buildFaqPageJsonLd, buildMetiersServiceItemListJsonLd } from '../utils/structured-data';
 
 const vedettes = projets.filter((p) => p.vedette);

@@ -1,0 +1,69 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import CsrfField from '../../components/admin/CsrfField.astro';
+
+export const prerender = false;
+const faqs = Astro.locals.site.faq || [];
+---
+
+<AdminLayout title="FAQ" active="faq">
+  {faqs.map((f, i) => (
+    <div class="faq-row">
+      <div class="faq-row-n">Question {i + 1}</div>
+      <form method="post" action="/api/admin/faq">
+        <CsrfField />
+        <input type="hidden" name="action" value="save" />
+        <div class="field"><label>Question</label><input type="text" name={`q_${i}`} value={f.question} /></div>
+        <div class="field"><label>Réponse</label><textarea name={`a_${i}`} rows={3}>{f.answer}</textarea></div>
+        {faqs.map((_, j) => j !== i && (
+          <>
+            <input type="hidden" name={`q_${j}`} value={faqs[j].question} />
+            <input type="hidden" name={`a_${j}`} value={faqs[j].answer} />
+          </>
+        ))}
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem">
+          <button type="submit" class="btn btn-sm btn-ok">💾 Enregistrer</button>
+        </div>
+      </form>
+      <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
+        {i > 0 && (
+          <form method="post" action="/api/admin/faq" style="display:inline">
+            <CsrfField />
+            <input type="hidden" name="move" value="up" />
+            <input type="hidden" name="idx" value={i} />
+            <button type="submit" class="btn btn-sm">↑ Monter</button>
+          </form>
+        )}
+        {i < faqs.length - 1 && (
+          <form method="post" action="/api/admin/faq" style="display:inline">
+            <CsrfField />
+            <input type="hidden" name="move" value="down" />
+            <input type="hidden" name="idx" value={i} />
+            <button type="submit" class="btn btn-sm">↓ Descendre</button>
+          </form>
+        )}
+        <form method="post" action="/api/admin/faq" style="display:inline">
+          <CsrfField />
+          <input type="hidden" name="delete_faq" value={i} />
+          <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Supprimer cette question ?')">🗑 Supprimer</button>
+        </form>
+      </div>
+    </div>
+  ))}
+
+  <form method="post" action="/api/admin/faq">
+    <CsrfField />
+    {faqs.map((f, i) => (
+      <>
+        <input type="hidden" name={`q_${i}`} value={f.question} />
+        <input type="hidden" name={`a_${i}`} value={f.answer} />
+      </>
+    ))}
+    <div class="faq-row" style="border-style:dashed">
+      <div class="faq-row-n">Nouvelle question</div>
+      <div class="field"><label>Question</label><input type="text" name="new_q" placeholder="Votre question…" /></div>
+      <div class="field"><label>Réponse</label><textarea name="new_a" rows={3} placeholder="La réponse…"></textarea></div>
+    </div>
+    <button type="submit" name="action" value="add" class="btn">➕ Ajouter</button>
+  </form>
+</AdminLayout>

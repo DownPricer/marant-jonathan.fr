@@ -1,0 +1,4 @@
+---
+const csrf = Astro.locals.csrfToken ?? '';
+---
+<input type="hidden" name="csrf" value={csrf} />

@@ -1,0 +1,69 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import CsrfField from '../../components/admin/CsrfField.astro';
+
+export const prerender = false;
+const avis = Astro.locals.site.avis || [];
+---
+
+<AdminLayout title="Avis clients" active="avis">
+  {avis.map((a, i) => (
+    <div class="avis-row">
+      <div class="faq-row-n">Avis {i + 1}</div>
+      <form method="post" action="/api/admin/avis">
+        <CsrfField />
+        <input type="hidden" name="action" value="save" />
+        {avis.map((x, j) => (
+          j === i ? null : (
+            <>
+              <input type="hidden" name={`t_${j}`} value={x.texte} />
+              <input type="hidden" name={`au_${j}`} value={x.auteur} />
+            </>
+          )
+        ))}
+        <div class="field"><label>Texte</label><textarea name={`t_${i}`} rows={3}>{a.texte}</textarea></div>
+        <div class="field"><label>Auteur</label><input type="text" name={`au_${i}`} value={a.auteur} /></div>
+        <button type="submit" class="btn btn-sm btn-ok">💾 Enregistrer</button>
+      </form>
+      <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
+        {i > 0 && (
+          <form method="post" action="/api/admin/avis" style="display:inline">
+            <CsrfField />
+            <input type="hidden" name="move" value="up" />
+            <input type="hidden" name="idx" value={i} />
+            <button type="submit" class="btn btn-sm">↑ Monter</button>
+          </form>
+        )}
+        {i < avis.length - 1 && (
+          <form method="post" action="/api/admin/avis" style="display:inline">
+            <CsrfField />
+            <input type="hidden" name="move" value="down" />
+            <input type="hidden" name="idx" value={i} />
+            <button type="submit" class="btn btn-sm">↓ Descendre</button>
+          </form>
+        )}
+        <form method="post" action="/api/admin/avis" style="display:inline">
+          <CsrfField />
+          <input type="hidden" name="delete_avis" value={i} />
+          <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Supprimer cet avis ?')">🗑 Supprimer</button>
+        </form>
+      </div>
+    </div>
+  ))}
+
+  <form method="post" action="/api/admin/avis">
+    <CsrfField />
+    {avis.map((a, i) => (
+      <>
+        <input type="hidden" name={`t_${i}`} value={a.texte} />
+        <input type="hidden" name={`au_${i}`} value={a.auteur} />
+      </>
+    ))}
+    <div class="avis-row" style="border-style:dashed">
+      <div class="faq-row-n">Nouvel avis</div>
+      <div class="field"><label>Texte</label><textarea name="new_t" rows={3} placeholder="Texte de l'avis…"></textarea></div>
+      <div class="field"><label>Auteur</label><input type="text" name="new_au" placeholder="Prénom N." /></div>
+    </div>
+    <button type="submit" name="action" value="add" class="btn">➕ Ajouter</button>
+  </form>
+</AdminLayout>

@@ -1,0 +1,25 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import CsrfField from '../../components/admin/CsrfField.astro';
+
+export const prerender = false;
+const a = Astro.locals.site.aPropos || { paragraphe1: '', paragraphe2: '', certifications: [] };
+---
+
+<AdminLayout title="À propos" active="apropos">
+  <form method="post" action="/api/admin/apropos">
+    <CsrfField />
+    <div class="card">
+      <div class="card-title">Textes de la page À propos</div>
+      <div class="field"><label>Paragraphe 1</label><textarea name="p1" rows={5}>{a.paragraphe1}</textarea></div>
+      <div class="field"><label>Paragraphe 2</label><textarea name="p2" rows={5}>{a.paragraphe2}</textarea></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Certifications / Badges</div>
+      {(a.certifications || []).map((c, i) => (
+        <div class="field"><label>Badge {i + 1}</label><input type="text" name={`cert_${i}`} value={c} /></div>
+      ))}
+    </div>
+    <button type="submit" class="btn btn-ok">💾 Enregistrer</button>
+  </form>
+</AdminLayout>
